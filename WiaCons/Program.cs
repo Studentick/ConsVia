@@ -32,7 +32,12 @@ namespace WiaCons
         static Stopwatch sw_timeout = new Stopwatch(); // Для проверки потраченного времени на опрос ДУТа
         static Stopwatch sw_request = new Stopwatch(); // Для проверки необходимости повторного опроса ДУТов
         static TimerCallback timeCB = new TimerCallback(tmrDutControl_Tick);
-        static Timer tmrDutControl = new Timer(timeCB, null, 0, 30000);
+        // Минимум 15 секунд
+        static int dc_timer = 30000;
+        static Timer tmrDutControl = new Timer(timeCB, null, 0, dc_timer);
+        static TimerCallback tibeConn = new TimerCallback(autoConnect_Tick);
+        static int ac_timer = 10000;
+        static Timer autoConnect = new Timer(tibeConn, null, 0, ac_timer);
         static bool need_request = true;
         static int dut_selected = 0;
         static string dut_data = "";
@@ -62,9 +67,14 @@ namespace WiaCons
 
         static void Main(string[] args)
         {
+            tmrDutControl.Change(0,0);
+            //tmrDutControl_TutnOff();
+            //autoConnect_TurnOff();
             //Dutyara.GetPorts();
             dut_list.Add(new Dutyara(33722, 9600));
             Dutyara.GetPorts();
+            //tmrDutControl_TutnOn();
+            //autoConnect_TurnOn();
             //tmrDutControl.Change(time,);
             tmrPing = new System.Threading.Timer(new TimerCallback(PingTimerCallback), null, System.Threading.Timeout.Infinite, System.Threading.Timeout.Infinite);
             var base_path = Environment.GetEnvironmentVariable("USERPROFILE");
@@ -163,6 +173,27 @@ namespace WiaCons
                 }
 
             }
+        }
+
+        // Стопперы и запускаторы таймеров
+
+        static void tmrDutControl_TutnOff()
+        {
+            tmrDutControl.Change(0, 0);
+        }
+        static void tmrDutControl_TutnOn()
+        {
+            tmrDutControl.Change(0, dc_timer);
+        }
+
+        static void autoConnect_TurnOff()
+        {
+            autoConnect.Change(0, 0);
+        }
+
+        static void autoConnect_TurnOn()
+        {
+            autoConnect.Change(0, ac_timer);
         }
 
         // Проверка полученных данных от ДУТа
@@ -327,6 +358,8 @@ namespace WiaCons
         }
 
 
+        
+
         async static void SendDutData(string ips_params, MessagesCommunicator _mmc)
         {
             await Task.Run(() =>
@@ -436,6 +469,21 @@ namespace WiaCons
                 Console.WriteLine(exc.Message);
             }
         }
+
+        static private void autoConnect_Tick(object state)
+        {
+            bool conn = false;
+
+            if (_mc == null || !_mc.IsConnected)
+            {
+                ConnectClick();
+            }
+            else
+                Console.WriteLine("Jopa");
+
+            //bool bb =this._mc.IsConnected;
+        }
+
 
         static void _mc_OnConnect(MessagesCommunicator comm)
         {
