@@ -130,6 +130,7 @@ namespace WiaCons
                 catch (Exception ex)
                 {
                     Console.WriteLine(ex.Message);
+                    Dutyara.GetPorts();
                     //MainForm.message_status = MainForm.PORT_DROP;
                 }
             return "";
@@ -149,10 +150,10 @@ namespace WiaCons
                 for (i = 0; i < ports.Length; i++)
                     portsList.Add(ports[i]); //заполняем ими список
 
-                if (ports.Length >= 1)
+                if (ports.Length >= 1 )
                 {
                     int def_port = portsList.IndexOf(Settings.Default.def_port);
-                    if (def_port != -1)
+                    if (def_port != -1 && ChechPortAvailable(ports))
                     {
                         selectedPort = Settings.Default.def_port;
                     }
@@ -178,6 +179,20 @@ namespace WiaCons
                 }
             }
             catch (Exception ex) { Console.WriteLine(ex.Message); }
+        }
+
+        static bool ChechPortAvailable(string[] ports)
+        {
+            bool res = false;
+            foreach (var item in ports)
+            {
+                if (item == Settings.Default.def_port)
+                {
+                    res = true;
+                    break;
+                }
+            }
+            return res;
         }
 
         public void SendMsg()

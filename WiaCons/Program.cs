@@ -34,10 +34,10 @@ namespace WiaCons
         static TimerCallback timeCB = new TimerCallback(tmrDutControl_Tick);
         // Минимум 15 секунд
         static int dc_timer = 30000;
-        static Timer tmrDutControl = new Timer(timeCB, null, 0, dc_timer);
+        static Timer tmrDutControl = new Timer(timeCB, null, dc_timer, dc_timer);
         static TimerCallback tibeConn = new TimerCallback(autoConnect_Tick);
         static int ac_timer = 10000;
-        static Timer autoConnect = new Timer(tibeConn, null, 0, ac_timer);
+        static Timer autoConnect = new Timer(tibeConn, null, ac_timer, ac_timer);
         static bool need_request = true;
         static int dut_selected = 0;
         static string dut_data = "";
@@ -67,15 +67,14 @@ namespace WiaCons
 
         static void Main(string[] args)
         {
-            tmrDutControl.Change(0,0);
-            //tmrDutControl_TutnOff();
-            //autoConnect_TurnOff();
-            //Dutyara.GetPorts();
+            tmrDutControl_TutnOff();
+            autoConnect_TurnOff();
+            Dutyara.GetPorts();
             dut_list.Add(new Dutyara(33722, 9600));
             Dutyara.GetPorts();
-            //tmrDutControl_TutnOn();
-            //autoConnect_TurnOn();
-            //tmrDutControl.Change(time,);
+            tmrDutControl_TutnOn();
+            autoConnect_TurnOn();
+
             tmrPing = new System.Threading.Timer(new TimerCallback(PingTimerCallback), null, System.Threading.Timeout.Infinite, System.Threading.Timeout.Infinite);
             var base_path = Environment.GetEnvironmentVariable("USERPROFILE");
             if (base_path == null)
@@ -179,21 +178,21 @@ namespace WiaCons
 
         static void tmrDutControl_TutnOff()
         {
-            tmrDutControl.Change(0, 0);
+            tmrDutControl.Change(Timeout.Infinite, Timeout.Infinite);
         }
         static void tmrDutControl_TutnOn()
         {
-            tmrDutControl.Change(0, dc_timer);
+            tmrDutControl.Change(dc_timer, dc_timer);
         }
 
         static void autoConnect_TurnOff()
         {
-            autoConnect.Change(0, 0);
+            autoConnect.Change(Timeout.Infinite, Timeout.Infinite);
         }
 
         static void autoConnect_TurnOn()
         {
-            autoConnect.Change(0, ac_timer);
+            autoConnect.Change(ac_timer, ac_timer);
         }
 
         // Проверка полученных данных от ДУТа
