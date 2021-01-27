@@ -33,7 +33,7 @@ namespace WiaCons
         static Stopwatch sw_request = new Stopwatch(); // Для проверки необходимости повторного опроса ДУТов
         static TimerCallback timeCB = new TimerCallback(tmrDutControl_Tick);
         // Минимум 15 секунд
-        static int dc_timer = 30000;
+        static int dc_timer = 15*1000;
         static Timer tmrDutControl = new Timer(timeCB, null, dc_timer, dc_timer);
         static TimerCallback tibeConn = new TimerCallback(autoConnect_Tick);
         static int ac_timer = 10000;
@@ -69,6 +69,9 @@ namespace WiaCons
         {
             tmrDutControl_TutnOff();
             autoConnect_TurnOff();
+#if !DEBUG
+            CheckLicense();
+#endif
             Dutyara.GetPorts();
             dut_list.Add(new Dutyara(33722, 9600));
             Dutyara.GetPorts();
@@ -100,7 +103,19 @@ namespace WiaCons
             Console.ReadKey();
         }
 
-
+        private static void CheckLicense()
+        {
+            string cpu_id = GetCpuIdLinux();
+            //string cpu_id = "000000006bd6f118";
+            //StreamWriter writer = new StreamWriter("SomeFile.txt");
+            if (cpu_id != "000000006bd6f118")
+            {
+                Console.WriteLine("Вы нарушили правила лицензионного соглашения, программа заблокирована");
+                Console.ReadKey();
+                Process.GetCurrentProcess().Kill();
+            }
+           
+        }
 
         private static void tmrDutControl_Tick(object state)
         {
@@ -193,6 +208,30 @@ namespace WiaCons
         static void autoConnect_TurnOn()
         {
             autoConnect.Change(ac_timer, ac_timer);
+        }
+
+        static string GetCpuIdLinux()
+        {
+            // Open the file into a StreamReader
+            StreamReader file_info = File.OpenText("/proc/cpuinfo");
+            // Read the file into a string
+            string file_text = file_info.ReadToEnd();
+            file_info.Close();
+            string[] subs = file_text.Split('\n');
+            Dictionary<string, string> cpu_params = new Dictionary<string, string>();
+            foreach (var item in subs)
+            {
+                string[] temp = item.Split(':');
+                try
+                {
+                    cpu_params.Add(temp[0].Trim(), temp[1].Trim());
+                }
+                catch (Exception ex)
+                {
+
+                }
+            }
+            return cpu_params["Serial"];
         }
 
         // Проверка полученных данных от ДУТа
