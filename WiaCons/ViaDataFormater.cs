@@ -10,8 +10,10 @@ namespace WiaCons
     {
         public static string GenerateString(Dutyara dut, int iter)
         {
-            string rtn = "id-" + (iter + 1) + ":3:" + dut.Id + ",fuel:2:" + FormatFluid(dut.msg_cont.fuel)
-                + ",water:2:" + FormatFluid(dut.msg_cont.water) + ",temp:2:" + FormatTemp(dut.msg_cont.temp) + ",";
+            //string rtn = "id-" + (iter + 1) + ":3:" + dut.Id + ",fuel-" + (iter + 1) + ":2:" + FormatFluid(dut.msg_cont.fuel)
+            //    + ",water-" + (iter + 1) + ":2:" + FormatFluid(dut.msg_cont.water) + ",temp-" + (iter + 1) + ":2:" + FormatTemp(dut.msg_cont.temp) + ",";
+            string rtn = "id" + (iter + 1) + ":3:" + dut.Id + ",fuel" + (iter + 1) + ":2:" + FormatFluid(dut.msg_cont.fuel)
+                + ",water" + (iter + 1) + ":2:" + FormatFluid(dut.msg_cont.water) + ",temp" + (iter + 1) + ":2:" + FormatTemp(dut.msg_cont.temp) + ",";
             return rtn;
         }
 

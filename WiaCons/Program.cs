@@ -14,6 +14,7 @@ namespace WiaCons
 {
     class Program
     {
+        static bool zateya = true;
         static private int _ping_interval = 240000; // 4 minutes
         static private MessagesCommunicator _mc = null;
         static private bool _closed = false, _ready = false;
@@ -33,7 +34,7 @@ namespace WiaCons
         static Stopwatch sw_request = new Stopwatch(); // Для проверки необходимости повторного опроса ДУТов
         static TimerCallback timeCB = new TimerCallback(tmrDutControl_Tick);
         // Минимум 15 секунд
-        static int dc_timer = 15*1000;
+        static int dc_timer = 4 *60*1000;
         static Timer tmrDutControl = new Timer(timeCB, null, dc_timer, dc_timer);
         static TimerCallback tibeConn = new TimerCallback(autoConnect_Tick);
         static int ac_timer = 10000;
@@ -74,6 +75,13 @@ namespace WiaCons
 #endif
             Dutyara.GetPorts();
             dut_list.Add(new Dutyara(33722, 9600));
+            dut_list.Add(new Dutyara(22733, 9600));
+            dut_list.Add(new Dutyara(12345, 9600));
+            dut_list.Add(new Dutyara(54321, 9600));
+            dut_list.Add(new Dutyara(11111, 9600));
+            dut_list.Add(new Dutyara(22222, 9600));
+            dut_list.Add(new Dutyara(33333, 9600));
+
             Dutyara.GetPorts();
             tmrDutControl_TutnOn();
             autoConnect_TurnOn();
@@ -99,7 +107,15 @@ namespace WiaCons
             }
 
 
-            ConnectClick();
+            //ConnectClick();
+            while (true)
+            {
+                string comm = "";
+                if (comm.ToLower() == "exit")
+                {
+                    break;
+                }
+            }
             Console.ReadKey();
         }
 
@@ -212,8 +228,8 @@ namespace WiaCons
 
         static string GetCpuIdLinux()
         {
-            // Open the file into a StreamReader
-            StreamReader file_info = File.OpenText("/proc/cpuinfo");
+            //  Open the file into a StreamReader
+              StreamReader file_info = File.OpenText("/proc/cpuinfo");
             // Read the file into a string
             string file_text = file_info.ReadToEnd();
             file_info.Close();
@@ -321,78 +337,85 @@ namespace WiaCons
 
         private static void SendToVialon(ref MessagesCommunicator _mmc)
         {
-            string params_string = String.Empty;
-            int dl_len = dut_list.Count;
-            Dutyara counter;
-            for (int iterator = 0; iterator < dl_len; iterator++)
+            if (zateya)
             {
-                counter = dut_list[iterator];
-                params_string += ViaDataFormater.GenerateString(counter, iterator);
-            }
-            params_string = params_string.Remove(params_string.Length - 1);
-            //MessageBox.Show(params_string);
-            //SendDutData(params_string, _mmc);
-            //Thread.Sleep(1000);
-            //SendDutData(params_string, _mmc);
-            //Thread.Sleep(1000);
-            //SendDutData(params_string, _mmc);
-            //Thread.Sleep(1000);
-            bool conn = false;
-
-            if (_mmc != null)
-            {
-                conn = _mmc.IsConnected;
-            }
-            if (conn)
-            {
-                //timer_stopper.Enabled = false;
-                //var gg = timer_stopper.Interval;
-                black_box.Add(params_string);
-                if (black_box.Count > 0)
+                //if (black_box.Count() > 2)
+                //zateya = false;
+                string params_string = String.Empty;
+                int dl_len = dut_list.Count;
+                Dutyara counter;
+                for (int iterator = 0; iterator < dl_len; iterator++)
                 {
-                    //int ts = timer_stopper.Interval / 1000;
-                    //timer_stopper.Stop();
+                    counter = dut_list[iterator];
+                    params_string += ViaDataFormater.GenerateString(counter, iterator);
+                }
+                params_string = params_string.Remove(params_string.Length - 1);
+                var dts = DateTime.Now.ToUniversalTime().ToString("ddMMyy;HHmmss");
+                //MessageBox.Show(params_string);
+                //SendDutData(params_string, _mmc);
+                //Thread.Sleep(1000);
+                //SendDutData(params_string, _mmc);
+                //Thread.Sleep(1000);
+                //SendDutData(params_string, _mmc);
+                //Thread.Sleep(1000);
+                bool conn = false;
 
-                    //int step = 1;
-
-                    //if (black_box.Count > ts + ts*20/100)
-                    //{
-                    //    step*=2;
-                    //    if (black_box.Count > 2*(ts + ts * 20 / 100))
-                    //    {
-                    //        step *= 2;
-                    //        if (black_box.Count > 4 * (ts + ts * 20 / 100))
-                    //        {
-                    //            step *= 2;
-                    //            if (black_box.Count > 8 * (ts + ts * 20 / 100))
-                    //            {
-                    //                step *= 2;
-                    //            }
-                    //        }
-                    //    }
-                    //}
-                    //for (int iterator = 0; iterator < black_box.Count; iterator += step)
-                    //{
-                    //    Console.WriteLine(black_box[iterator]);
-                    //    SendDutData(black_box[iterator], _mmc);
-                    //    Thread.Sleep(1000); // A nado?
-                    //}
-                    foreach (var item in black_box)
+                if (_mmc != null)
+                {
+                    conn = _mmc.IsConnected;
+                }
+                if (conn)
+                {
+                    
+                    //timer_stopper.Enabled = false;
+                    //var gg = timer_stopper.Interval;
+                    
+                    black_box.Add(params_string + "zuzuzu" + dts);
+                    if (black_box.Count > 0)
                     {
-                        Console.WriteLine(item);
-                        SendDutData(item, _mmc);
-                        Thread.Sleep(1000); // A nado?
+                        //int ts = timer_stopper.Interval / 1000;
+                        //timer_stopper.Stop();
+
+                        //int step = 1;
+
+                        //if (black_box.Count > ts + ts*20/100)
+                        //{
+                        //    step*=2;
+                        //    if (black_box.Count > 2*(ts + ts * 20 / 100))
+                        //    {
+                        //        step *= 2;
+                        //        if (black_box.Count > 4 * (ts + ts * 20 / 100))
+                        //        {
+                        //            step *= 2;
+                        //            if (black_box.Count > 8 * (ts + ts * 20 / 100))
+                        //            {
+                        //                step *= 2;
+                        //            }
+                        //        }
+                        //    }
+                        //}
+                        //for (int iterator = 0; iterator < black_box.Count; iterator += step)
+                        //{
+                        //    Console.WriteLine(black_box[iterator]);
+                        //    SendDutData(black_box[iterator], _mmc);
+                        //    Thread.Sleep(1000); // A nado?
+                        //}
+                        foreach (var item in black_box)
+                        {
+                            Console.WriteLine(item);
+                            SendDutData(item, _mmc);
+                            Thread.Sleep(1000); // A nado?
+                        }
+                        black_box.Clear();
+                        //timer_stopper.Start();
                     }
-                    black_box.Clear();
-                    //timer_stopper.Start();
+                }
+                else
+                {
+                    black_box.Add(params_string + "zuzuzu" + dts);
+                    Console.WriteLine("Add");
                 }
             }
-            else
-            {
-                black_box.Add(params_string);
-                Console.WriteLine("Add");
-            }
-
         }
 
 
@@ -405,9 +428,12 @@ namespace WiaCons
                 bool gg = true;
                 // Тут работа кипит
                 var l_dt = MyParseDateTime(DateTime.Now.ToUniversalTime());
+                string[] _ips_params = ips_params.Split(new string[] { "zuzuzu" }, StringSplitOptions.None);
                 //string t_msg = "#D#"+ l_dt[0] + ";"+ l_dt[1] + ";;;;;;;;;;;;;;";
-                string t_msg = "#D#" + DateTime.Now.ToUniversalTime().ToString("ddMMyy;HHmmss") + ";;;;;;;;;;;;;;";
-                t_msg += ips_params;
+                //string t_msg1 = "#D#" + DateTime.Now.ToUniversalTime().ToString("ddMMyy;HHmmss") + ";;;;;;;;;;;;;;";
+                string t_msg = "#D#" + _ips_params[1] + ";;;;;;;;;;;;;;";
+                t_msg += _ips_params[0];
+                
                 //var text = this.tbSendRaw.Text.Trim();
                 //this.tbSendRaw.Focus();
                 //this.tbSendRaw.SelectAll();
@@ -425,6 +451,7 @@ namespace WiaCons
                         System.Media.SystemSounds.Exclamation.Play();
                     }
                 }
+                
                 Thread.Sleep(100);
             }
             );
