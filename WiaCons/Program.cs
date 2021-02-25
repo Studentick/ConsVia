@@ -478,7 +478,6 @@ namespace WiaCons
 
         static private void PingTimerCallback(object state)
         {
-            CheckLicense();
             _mc.Send(new WialonIPS.PingMessage());
         }
 
