@@ -34,7 +34,7 @@ namespace WiaCons
         static Stopwatch sw_request = new Stopwatch(); // Для проверки необходимости повторного опроса ДУТов
         static TimerCallback timeCB = new TimerCallback(tmrDutControl_Tick);
         // Минимум 15 секунд
-        static int dc_timer = 4 *60*1000;
+        static int dc_timer = 1 *20*1000;
         static Timer tmrDutControl = new Timer(timeCB, null, dc_timer, dc_timer);
         static TimerCallback tibeConn = new TimerCallback(autoConnect_Tick);
         static int ac_timer = 10000;
@@ -76,11 +76,6 @@ namespace WiaCons
             Dutyara.GetPorts();
             dut_list.Add(new Dutyara(33722, 9600));
             dut_list.Add(new Dutyara(22733, 9600));
-            dut_list.Add(new Dutyara(12345, 9600));
-            dut_list.Add(new Dutyara(54321, 9600));
-            dut_list.Add(new Dutyara(11111, 9600));
-            dut_list.Add(new Dutyara(22222, 9600));
-            dut_list.Add(new Dutyara(33333, 9600));
 
             Dutyara.GetPorts();
             tmrDutControl_TutnOn();
@@ -124,7 +119,8 @@ namespace WiaCons
             string cpu_id = GetCpuIdLinux();
             //string cpu_id = "000000006bd6f118";
             //StreamWriter writer = new StreamWriter("SomeFile.txt");
-            if (cpu_id != "000000006bd6f118")
+            //if (cpu_id != "000000006bd6f118")
+            if (cpu_id != "1000000013d0b0e1")
             {
                 Console.WriteLine("Вы нарушили правила лицензионного соглашения, программа заблокирована");
                 Console.ReadKey();
