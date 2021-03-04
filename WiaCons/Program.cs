@@ -14,6 +14,8 @@ namespace WiaCons
 {
     class Program
     {
+        static string path = "LogSender.txt";
+        static int deb = 2;
         static bool zateya = true;
         static private int _ping_interval = 240000; // 4 minutes
         static private MessagesCommunicator _mc = null;
@@ -34,7 +36,7 @@ namespace WiaCons
         static Stopwatch sw_request = new Stopwatch(); // Для проверки необходимости повторного опроса ДУТов
         static TimerCallback timeCB = new TimerCallback(tmrDutControl_Tick);
         // Минимум 15 секунд
-        static int dc_timer = 1 *20*1000;
+        static int dc_timer = 15 * 60 * 1000;
         static Timer tmrDutControl = new Timer(timeCB, null, dc_timer, dc_timer);
         static TimerCallback tibeConn = new TimerCallback(autoConnect_Tick);
         static int ac_timer = 10000;
@@ -49,6 +51,8 @@ namespace WiaCons
         const string FAIL_VALUE = "65536" /*Не верный формат данных*/, DROP_VALUE = "65533" /*Часть данных была потеряна*/,
             PORT_VALUE = "65530" /*Ошибка COM-порта*/;
         private static bool stopped_request = false;
+
+        static bool isConnected = false;
 
         static List<Dutyara> dut_list = new List<Dutyara>();
 
@@ -73,6 +77,9 @@ namespace WiaCons
 #if !DEBUG
             CheckLicense();
 #endif
+if (deb == 1)
+            dc_timer = 1 * 30 * 1000;
+
             Dutyara.GetPorts();
             dut_list.Add(new Dutyara(33722, 9600));
             dut_list.Add(new Dutyara(22733, 9600));
@@ -89,7 +96,10 @@ namespace WiaCons
                 base_path = Path.GetDirectoryName(Environment.CurrentDirectory);
             _settings_file_name = Path.Combine(base_path, ".wialon_ips_emulator.settings");
 
-
+            if (!File.Exists(path))
+            {
+                File.Create(path);
+            }
             try
             {
                 Settings = CSettings.Load(_settings_file_name);
@@ -367,6 +377,20 @@ namespace WiaCons
                     //var gg = timer_stopper.Interval;
                     
                     black_box.Add(params_string + "zuzuzu" + dts);
+                    if (!File.Exists(path))
+                    {
+                        File.Create(path);
+                    }
+
+//#if !DEBUG
+                    //LinuxLog(params_string + "zuzuzu" + dts.Insert(2, ".").Insert(5, ".").Insert(11, ":").Insert(14, ":"));
+//#endif
+//#if DEBUG
+                    WindowsLog(params_string + "zuzuzu" + dts.Insert(2, ".").Insert(5, ".").Insert(11, ":").Insert(14, ":"));;
+//#endif
+
+
+
                     if (black_box.Count > 0)
                     {
                         //int ts = timer_stopper.Interval / 1000;
@@ -408,14 +432,60 @@ namespace WiaCons
                 }
                 else
                 {
+                    var tt = dts.Insert(2, ".").Insert(5, ".").Insert(11, ":").Insert(14, ":");
+                    
                     black_box.Add(params_string + "zuzuzu" + dts);
+                    if (!File.Exists(path))
+                    {
+                        File.Create(path);
+                    }
+//#if !DEBUG
+                    //LinuxLog(params_string + "zuzuzu" + dts.Insert(2, ".").Insert(5, ".").Insert(11, ":").Insert(14, ":"));
+//#endif
+//#if DEBUG
+                    WindowsLog(params_string + "zuzuzu" + dts.Insert(2, ".").Insert(5, ".").Insert(11, ":").Insert(14, ":"));;
+//#endif
+
                     Console.WriteLine("Add");
                 }
             }
         }
 
+        private static void WindowsLog(string v)
+        {
+            var t1 = v.Split(';');
+            // { [26.02.21](0)   [08:34:40](1)}
+            var t2 = t1[1].Split(':');
+            // [08](0) [34](1) [40](2)
+            var t3 = (Convert.ToInt32(t2[0]) + 2).ToString();
+            t2[0] = t3;
+            t1[1] = String.Join(":", t2);
+            v = String.Join(";", t1);
 
-        
+
+            string[] ss = { v };
+            File.AppendAllLines(path, ss);
+        }
+
+        private static void LinuxLog(string msg)
+        {
+            Thread.Sleep(1000);
+            // Open the file into a StreamReader
+            StreamReader file = File.OpenText(path);
+            // Read the file into a string
+            string s = file.ReadToEnd();
+            // Close the file so it can be accessed again.
+            file.Close();
+
+            // Add a line to the text
+            s += msg + "\n";
+
+            // Hook a write to the text file.
+            StreamWriter writer = new StreamWriter(path);
+            // Rewrite the entire value of s to the file
+            writer.Write(s);
+            writer.Close();
+        }
 
         async static void SendDutData(string ips_params, MessagesCommunicator _mmc)
         {
