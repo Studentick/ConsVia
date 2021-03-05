@@ -37,7 +37,7 @@ namespace WiaCons
         static Stopwatch sw_request = new Stopwatch(); // Для проверки необходимости повторного опроса ДУТов
         static TimerCallback timeCB = new TimerCallback(tmrDutControl_Tick);
         // Минимум 15 секунд, но это не точно (с тех пор утекло много воды)
-        static int dc_timer = 1 * 60 * 1000;
+        static int dc_timer = 3 * 60 * 1000;
         static Timer tmrDutControl = new Timer(timeCB, null, dc_timer, dc_timer);
         static TimerCallback tibeConn = new TimerCallback(autoConnect_Tick);
         static int ac_timer = 10000;
@@ -370,10 +370,7 @@ if (deb == 1)
                 isConnectedStatus = GetConnectedStatus();
 
                 
-
-                
-                    
-                if(isConnectedStatus != oldConnectedStatus)
+                if (isConnectedStatus != oldConnectedStatus)
                 {
                     if (isConnectedStatus)
                     {
@@ -384,19 +381,22 @@ if (deb == 1)
                     }
                     else
                     {
-                    _mc.Disconnect();
-                    _mc = null;
-                    Console.ForegroundColor = ConsoleColor.Blue;
+                        Disconnect();
+
+                        //_mc = null;
+                        Console.ForegroundColor = ConsoleColor.Blue;
                         Console.WriteLine("\n\n\n Потеряна связь с сервером \n\n\n");
                         Console.ResetColor();
                         oldConnectedStatus = isConnectedStatus;
+                        goto metka;
                     }
-                        
+
                 }
                 if (_mmc != null)
                 {
                     conn = _mmc.IsConnected;
                 }
+                metka: 
                 if (conn)
                 {
                     
@@ -538,38 +538,58 @@ if (deb == 1)
 
         async static void SendDutData(string ips_params, MessagesCommunicator _mmc)
         {
-            await Task.Run(() =>
+            try
             {
-                bool gg = true;
-                // Тут работа кипит
-                var l_dt = MyParseDateTime(DateTime.Now.ToUniversalTime());
-                string[] _ips_params = ips_params.Split(new string[] { "zuzuzu" }, StringSplitOptions.None);
-                //string t_msg = "#D#"+ l_dt[0] + ";"+ l_dt[1] + ";;;;;;;;;;;;;;";
-                //string t_msg1 = "#D#" + DateTime.Now.ToUniversalTime().ToString("ddMMyy;HHmmss") + ";;;;;;;;;;;;;;";
-                string t_msg = "#D#" + _ips_params[1] + ";;;;;;;;;;;;;;";
-                t_msg += _ips_params[0];
-                
-                //var text = this.tbSendRaw.Text.Trim();
-                //this.tbSendRaw.Focus();
-                //this.tbSendRaw.SelectAll();
-                if (gg == true)
+
+                await Task.Run(() =>
                 {
-                    var msg = WialonIPS.Message.Parse(t_msg);
-                    var vv = msg.GetType();
-                    if (msg.Success)
+                    try
                     {
-                        _mmc.Send(msg);
+                        bool gg = true;
+                    // Тут работа кипит
+                    var l_dt = MyParseDateTime(DateTime.Now.ToUniversalTime());
+                        string[] _ips_params = ips_params.Split(new string[] { "zuzuzu" }, StringSplitOptions.None);
+                    //string t_msg = "#D#"+ l_dt[0] + ";"+ l_dt[1] + ";;;;;;;;;;;;;;";
+                    //string t_msg1 = "#D#" + DateTime.Now.ToUniversalTime().ToString("ddMMyy;HHmmss") + ";;;;;;;;;;;;;;";
+                    string t_msg = "#D#" + _ips_params[1] + ";;;;;;;;;;;;;;";
+                        t_msg += _ips_params[0];
+
+                    //var text = this.tbSendRaw.Text.Trim();
+                    //this.tbSendRaw.Focus();
+                    //this.tbSendRaw.SelectAll();
+                    if (gg == true)
+                        {
+                            var msg = WialonIPS.Message.Parse(t_msg);
+                            var vv = msg.GetType();
+                            if (msg.Success)
+                            {
+                                _mmc.Send(msg);
+                            }
+                            else
+                            {
+                            // this.Log.PostHead("Emulator", "Unknown packet not sent: " + t_msg);
+                            System.Media.SystemSounds.Exclamation.Play();
+                            }
+                        }
+
+                        Thread.Sleep(100);
                     }
-                    else
+                    catch (Exception ex)
                     {
-                        // this.Log.PostHead("Emulator", "Unknown packet not sent: " + t_msg);
-                        System.Media.SystemSounds.Exclamation.Play();
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.WriteLine("\n\n\n Ошибка в Хреновом потоке \n\n\n");
+                        Console.ResetColor();
                     }
                 }
-                
-                Thread.Sleep(100);
+                );
             }
-            );
+            catch(Exception ex)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("\n\n\n Ошибка в вызове потока \n\n\n");
+                Console.ResetColor();
+            }
+        
         }
 
         // Получение текущей даты для пакетов.
@@ -593,7 +613,16 @@ if (deb == 1)
 
         static private void PingTimerCallback(object state)
         {
-            _mc.Send(new WialonIPS.PingMessage());
+            try
+            {
+                _mc.Send(new WialonIPS.PingMessage());
+            }
+            catch (Exception ex)
+            {
+                Console.ForegroundColor = ConsoleColor.Blue;
+                Console.WriteLine("\n\n\n Ошибка в Пинге \n\n\n");
+                Console.ResetColor();
+            }
         }
 
 
@@ -644,9 +673,11 @@ if (deb == 1)
             }
             catch (Exception exc)
             {
+                Console.ForegroundColor = ConsoleColor.Yellow;
                 //this.ActivateConnectControls(true);
                 Console.WriteLine("(Log) Exception Disconnect: " + exc);
                 Console.WriteLine(exc.Message);
+                Console.ResetColor();
             }
         }
 
@@ -667,38 +698,73 @@ if (deb == 1)
 
         static void _mc_OnConnect(MessagesCommunicator comm)
         {
-            //this.ActivateConnectControls(false);
-            Console.WriteLine("Emulator: " + "Connected to " + selected_server);
-            _mc.Send(new LoginMessage(selected_device.ID, selected_device.Password));
-            if (Settings.SendPingPackets)
-                tmrPing.Change(_ping_interval, _ping_interval);
+            try
+            {
+                //this.ActivateConnectControls(false);
+                Console.WriteLine("Emulator: " + "Connected to " + selected_server);
+                _mc.Send(new LoginMessage(selected_device.ID, selected_device.Password));
+                if (Settings.SendPingPackets)
+                    tmrPing.Change(_ping_interval, _ping_interval);
+            }
+            catch (Exception ex)
+            {
+                Console.ForegroundColor = ConsoleColor.Blue;
+                Console.WriteLine("\n\n\n Ошибка в онКоннекте \n\n\n");
+                Console.ResetColor();
+            }
         }
 
         static void _mc_OnDisconnect(MessagesCommunicator comm)
         {
-            Console.WriteLine("Emulator: " + "Disconnected from " + selected_server);
+            try
+            {
+                Console.WriteLine("Emulator: " + "Disconnected from " + selected_server);
             tmrPing.Change(System.Threading.Timeout.Infinite, System.Threading.Timeout.Infinite);
+        }
+            catch (Exception ex)
+            {
+                Console.ForegroundColor = ConsoleColor.Blue;
+                Console.WriteLine("\n\n\n Ошибка в онДисКоннекте \n\n\n");
+                Console.ResetColor();
+            }
         }
 
 
         static void _mc_OnReceive(MessagesCommunicator comm, WialonIPS.Message msg)
         {
+            try { 
+
             Console.WriteLine(">>>" + msg.ToString());
             if (msg.MsgType == MessageType.Message)
                 Console.WriteLine((msg as WialonIPS.MessageMessage).Text);
                 //this.Messages.Received((msg as WialonIPS.MessageMessage).Text);
             if (msg.MsgType == MessageType.LoginAns && !(msg as LoginAnsMessage).Success)
                 Disconnect();
+            }
+            catch (Exception ex)
+            {
+                Console.ForegroundColor = ConsoleColor.Blue;
+                Console.WriteLine("\n\n\n Ошибка в JOnRecive \n\n\n");
+                Console.ResetColor();
+            }
         }
 
         static void _mc_OnSent(MessagesCommunicator comm, WialonIPS.Message msg)
         {
+            try { 
             //this.Log.PostHead("<<<", msg.ToString());
             //if (msg.MsgType == MessageType.Message)
             //    this.Messages.Sent((msg as WialonIPS.MessageMessage).Text);
             if (Settings.SendPingPackets)
                 tmrPing.Change(_ping_interval, _ping_interval);
         }
+            catch (Exception ex)
+            {
+                Console.ForegroundColor = ConsoleColor.Blue;
+                Console.WriteLine("\n\n\n Ошибка в OnSent \n\n\n");
+                Console.ResetColor();
+            }
+}
 
         #region Connect/Disconnect/Select items/Activate controls logic and handlers
         private class DeviceNotSelected : Exception { };
