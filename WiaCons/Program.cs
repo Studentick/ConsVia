@@ -9,6 +9,7 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Xml.Serialization;
 using System.IO;
+using System.Net.NetworkInformation;
 
 namespace WiaCons
 {
@@ -35,8 +36,8 @@ namespace WiaCons
         static Stopwatch sw_timeout = new Stopwatch(); // Для проверки потраченного времени на опрос ДУТа
         static Stopwatch sw_request = new Stopwatch(); // Для проверки необходимости повторного опроса ДУТов
         static TimerCallback timeCB = new TimerCallback(tmrDutControl_Tick);
-        // Минимум 15 секунд
-        static int dc_timer = 15 * 60 * 1000;
+        // Минимум 15 секунд, но это не точно (с тех пор утекло много воды)
+        static int dc_timer = 1 * 60 * 1000;
         static Timer tmrDutControl = new Timer(timeCB, null, dc_timer, dc_timer);
         static TimerCallback tibeConn = new TimerCallback(autoConnect_Tick);
         static int ac_timer = 10000;
@@ -52,7 +53,7 @@ namespace WiaCons
             PORT_VALUE = "65530" /*Ошибка COM-порта*/;
         private static bool stopped_request = false;
 
-        static bool isConnected = false;
+        static bool isConnectedStatus = false, oldConnectedStatus = false;
 
         static List<Dutyara> dut_list = new List<Dutyara>();
 
@@ -121,6 +122,7 @@ if (deb == 1)
                     break;
                 }
             }
+            Console.Title = "KTS-Monitoring";
             Console.ReadKey();
         }
 
@@ -365,7 +367,32 @@ if (deb == 1)
                 //SendDutData(params_string, _mmc);
                 //Thread.Sleep(1000);
                 bool conn = false;
+                isConnectedStatus = GetConnectedStatus();
 
+                
+
+                
+                    
+                if(isConnectedStatus != oldConnectedStatus)
+                {
+                    if (isConnectedStatus)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Blue;
+                        Console.WriteLine("\n\n\n Подключение к Интернету восстановлено \n\n\n");
+                        Console.ResetColor();
+                        oldConnectedStatus = isConnectedStatus;
+                    }
+                    else
+                    {
+                    _mc.Disconnect();
+                    _mc = null;
+                    Console.ForegroundColor = ConsoleColor.Blue;
+                        Console.WriteLine("\n\n\n Потеряна связь с сервером \n\n\n");
+                        Console.ResetColor();
+                        oldConnectedStatus = isConnectedStatus;
+                    }
+                        
+                }
                 if (_mmc != null)
                 {
                     conn = _mmc.IsConnected;
@@ -448,6 +475,28 @@ if (deb == 1)
 
                     Console.WriteLine("Add");
                 }
+            }
+        }
+
+        static bool GetConnectedStatus()
+        {
+            Ping myPing = new Ping();
+            String host = "google.com";
+            byte[] buffer = new byte[32];
+            int timeout = 1000;
+            PingOptions pingOptions = new PingOptions();
+            try
+            {
+                PingReply reply = myPing.Send(host, timeout, buffer, pingOptions);
+                if (reply.Status == IPStatus.Success)
+                {
+                    return true;
+                }
+                return false;
+            }
+            catch (Exception ex)
+            {
+                return false;
             }
         }
 
