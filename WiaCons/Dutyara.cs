@@ -13,19 +13,19 @@ namespace WiaCons
         int id;
         int speed;
         static Random rnd = new Random();
-        static public bool opened = true;
-        public static int current_speed;
-        static public bool need_a_stop = false;
+        static public bool temptemp_1 = true;
+        public static int temptemp_2;
+        static public bool temptemp_3 = false;
 
 
-        static SerialPort serialP = new SerialPort();
-        static List<string> portsList = new List<string>();
-        static string selectedPort = "";
-        static int selectedSpeed = 9600;
-        static bool flag = true;
+        static SerialPort temptemp_4 = new SerialPort();
+        static List<string> temptemp_5 = new List<string>();
+        static string temptemp_6 = "";
+        static int temp_temp_7 = 9600;
+        static bool temptemp_8 = true;
 
-        public MessageContent msg_cont;
-        private float corrector;
+        public MessageContent temptemp_9;
+        private float temptemp_10;
 
 
         public int Id
@@ -40,13 +40,13 @@ namespace WiaCons
         {
             get
             {
-                return corrector;
+                return temptemp_10;
             }
 
             set
             {
                 if (value >= 0)
-                    corrector = value;
+                    temptemp_10 = value;
             }
         }
 
@@ -62,67 +62,64 @@ namespace WiaCons
         {
             this.id = id;
             this.speed = speed;
-            this.corrector = corrector;
-            msg_cont = new MessageContent();
+            this.temptemp_10 = corrector;
+            temptemp_9 = new MessageContent();
         }
 
 
-        public string GetData()
+        public string FuncFunc1()
         {
-            if (flag == true)
+            if (temptemp_8 == true)
                 try
                 {
                     byte[] inp;
-                    int inpQty = 0;
-                    string sReceiveDT = "";
-                    string message = "";
+                    int iii = 0;
+                    string iiii = "";
+                    string iiiii = "";
 
-                    // Если изменились настройки порта, перенастраиваем порт
-                    if (serialP.PortName != selectedPort)
+
+                    if (temptemp_4.PortName != temptemp_6)
                     {
-                        serialP.Close();
-                        serialP.PortName = selectedPort;
+                        temptemp_4.Close();
+                        temptemp_4.PortName = temptemp_6;
                     }
-                    if (serialP.BaudRate != selectedSpeed)
+                    if (temptemp_4.BaudRate != temp_temp_7)
                     {
-                        serialP.Close();
-                        serialP.BaudRate = selectedSpeed;
+                        temptemp_4.Close();
+                        temptemp_4.BaudRate = temp_temp_7;
                     }
-                    if (serialP.Parity != System.IO.Ports.Parity.None)
+                    if (temptemp_4.Parity != System.IO.Ports.Parity.None)
                     {
-                        serialP.Close();
-                        serialP.Parity = System.IO.Ports.Parity.None;
+                        temptemp_4.Close();
+                        temptemp_4.Parity = System.IO.Ports.Parity.None;
                     }
 
 
-                    // Если порт закрыт, открываем
-                    if (!serialP.IsOpen)
-                        serialP.Open();
+                    if (!temptemp_4.IsOpen)
+                        temptemp_4.Open();
 
-                    if (serialP.IsOpen)
+                    if (temptemp_4.IsOpen)
                     {
                         inp = new Byte[4096];
-                        inpQty = 0;
+                        iii = 0;
 
-                        if (serialP.BytesToRead > 0)    //если пришли данные
+                        if (temptemp_4.BytesToRead > 0)    //если пришли данные
                         {
-                            sReceiveDT = DateTime.Now.Hour.ToString("00") + ":" + DateTime.Now.Minute.ToString("00") + ":" + DateTime.Now.Second.ToString("00") + "." + DateTime.Now.Millisecond.ToString("000");
-                            inpQty = serialP.BytesToRead;               //определяем количество байт, которые пришли
-                            serialP.Read(inp, 0, serialP.BytesToRead);  //считываем данные
+                            iiii = DateTime.Now.Hour.ToString("00") + ":" + DateTime.Now.Minute.ToString("00") + ":" + DateTime.Now.Second.ToString("00") + "." + DateTime.Now.Millisecond.ToString("000");
+                            iii = temptemp_4.BytesToRead;              
+                            temptemp_4.Read(inp, 0, temptemp_4.BytesToRead);  
 
 
-                            // ПОКАЗ В СПИСКЕ
-                            if (inpQty > 0)
+                            if (iii > 0)
                             {
-                                message = "";
+                                iiiii = "";
 
-                                for (Int32 i = 0; i < inpQty; i++)
-                                    message += " " + ByteToStrHex(inp[i]);      //формируем сообщение для отображения в ListView
+                                for (Int32 i = 0; i < iii; i++)
+                                    iiiii += " " + FunkFunk6(inp[i]);   
 
-                                // Console.WriteLine("HEX: " + message);
-                                message = Encoding.ASCII.GetString(inp, 0, inpQty); // GatewayServer
+                                iiiii = Encoding.ASCII.GetString(inp, 0, iii); 
                                 // Console.WriteLine("ASCII: " + message);
-                                return message;
+                                return iiiii;
                             }
                         }
                     }
@@ -130,8 +127,7 @@ namespace WiaCons
                 catch (Exception ex)
                 {
                     Console.WriteLine(ex.Message);
-                    Dutyara.GetPorts();
-                    //MainForm.message_status = MainForm.PORT_DROP;
+                    Dutyara.FuncFunk2();
                 }
             return "";
 
@@ -139,129 +135,123 @@ namespace WiaCons
 
 
 
-        static public void GetPorts()
+        static public void FuncFunk2()
         {
 
             try
             {
-                string[] ports = SerialPort.GetPortNames(); //получаем список доступных СОМ-портов
+                string[] vvv = SerialPort.GetPortNames(); 
                 int i;
 
-                for (i = 0; i < ports.Length; i++)
-                    portsList.Add(ports[i]); //заполняем ими список
+                for (i = 0; i < vvv.Length; i++)
+                    temptemp_5.Add(vvv[i]); 
 
-                if (ports.Length >= 1 )
+                if (vvv.Length >= 1 )
                 {
-                    int def_port = portsList.IndexOf(Settings.Default.def_port);
-                    if (def_port != -1 && ChechPortAvailable(ports))
+                    int ppppp = temptemp_5.IndexOf(Settings.Default.def_port);
+                    if (ppppp != -1 && FunkFunk3(vvv))
                     {
-                        selectedPort = Settings.Default.def_port;
+                        temptemp_6 = Settings.Default.def_port;
                     }
                     else
                     {
                         Console.WriteLine("Выберите порт:");
 
-                        // выводим список портов
-                        for (int counter = 0; counter < ports.Length; counter++)
+                        for (int counter = 0; counter < vvv.Length; counter++)
                         {
-                            Console.WriteLine("[" + counter.ToString() + "] " + ports[counter].ToString());
+                            Console.WriteLine("[" + counter.ToString() + "] " + vvv[counter].ToString());
                         }
-                        int selected_p = int.Parse(Console.ReadLine());
-                        selectedPort = ports[selected_p];
-                        Settings.Default.def_port = selectedPort;
+                        int oooooo = int.Parse(Console.ReadLine());
+                        temptemp_6 = vvv[oooooo];
+                        Settings.Default.def_port = temptemp_6;
                         Settings.Default.Save();
                     }
                 }
                 else
                 {
-                    // Console.WriteLine("COM port is not available!");
-                    selectedPort = Settings.Default.def_port;
+                    temptemp_6 = Settings.Default.def_port;
                 }
             }
             catch (Exception ex) { Console.WriteLine(ex.Message); }
         }
 
-        static bool ChechPortAvailable(string[] ports)
+        static bool FunkFunk3(string[] ports)
         {
-            bool res = false;
+            bool mmmmmm = false;
             foreach (var item in ports)
             {
                 if (item == Settings.Default.def_port)
                 {
-                    res = true;
+                    mmmmmm = true;
                     break;
                 }
             }
-            return res;
+            return mmmmmm;
         }
 
-        public void SendMsg()
+        public void FunkFunk4()
         {
-            //string temp = "33722";
-            string pre = "4D ", post = " 0D";
+            string nnnnnnnnnn = "4D ", iiiiiiiiiiiii = " 0D";
             byte[] ggg = Encoding.ASCII.GetBytes(this.id.ToString());
             string gggg = "";
             for (Int32 i = 0; i < ggg.Length; i++)
-                gggg += " " + ByteToStrHex(ggg[i]);
-            gggg = pre + gggg + post;
-            byte[] bmsg = StrHexToByte(gggg.Replace(" ", ""));
-            // = Encoding.ASCII.GetBytes("M33722");
-            int bl = bmsg.Length;
+                gggg += " " + FunkFunk6(ggg[i]);
+            gggg = nnnnnnnnnn + gggg + iiiiiiiiiiiii;
+            byte[] qqqqqqqqqqq = FunkFunk7(gggg.Replace(" ", ""));
+            int bl = qqqqqqqqqqq.Length;
             try
             {
-                serialP.Write(bmsg, 0, bl);
+                temptemp_4.Write(qqqqqqqqqqq, 0, bl);
             }
             catch (Exception ex)
             {
-                // Console.WriteLine("По ходу отвалился порт");
             }
         }
 
-        public static byte[] FromHex(string hex)
+        public static byte[] FunkFunk5(string hex)
         {
             hex = hex.Replace("-", "");
-            byte[] raw = new byte[hex.Length / 2];
-            for (int i = 0; i < raw.Length; i++)
+            byte[] qwe = new byte[hex.Length / 2];
+            for (int i = 0; i < qwe.Length; i++)
             {
-                raw[i] = Convert.ToByte(hex.Substring(i * 2, 2), 16);
+                qwe[i] = Convert.ToByte(hex.Substring(i * 2, 2), 16);
             }
-            return raw;
+            return qwe;
         }
 
-        //функция преобразования Байта в 16-ричную строку
-        private static string ByteToStrHex(byte b)
+        private static string FunkFunk6(byte b)
         {
             try
             {
-                int iTmpH = b / (byte)16;
-                int iTmpL = b % (byte)16;
-                string ret = "";
+                int ttttttttttttt = b / (byte)16;
+                int yyy = b % (byte)16;
+                string yyyyyyy = "";
 
-                if (iTmpH < 10)
-                    ret = iTmpH.ToString();
+                if (ttttttttttttt < 10)
+                    yyyyyyy = ttttttttttttt.ToString();
                 else
                 {
-                    if (iTmpH == 10) ret = "A";
-                    if (iTmpH == 11) ret = "B";
-                    if (iTmpH == 12) ret = "C";
-                    if (iTmpH == 13) ret = "D";
-                    if (iTmpH == 14) ret = "E";
-                    if (iTmpH == 15) ret = "F";
+                    if (ttttttttttttt == 10) yyyyyyy = "A";
+                    if (ttttttttttttt == 11) yyyyyyy = "B";
+                    if (ttttttttttttt == 12) yyyyyyy = "C";
+                    if (ttttttttttttt == 13) yyyyyyy = "D";
+                    if (ttttttttttttt == 14) yyyyyyy = "E";
+                    if (ttttttttttttt == 15) yyyyyyy = "F";
                 }
 
-                if (iTmpL < 10)
-                    ret += iTmpL.ToString();
+                if (yyy < 10)
+                    yyyyyyy += yyy.ToString();
                 else
                 {
-                    if (iTmpL == 10) ret += "A";
-                    if (iTmpL == 11) ret += "B";
-                    if (iTmpL == 12) ret += "C";
-                    if (iTmpL == 13) ret += "D";
-                    if (iTmpL == 14) ret += "E";
-                    if (iTmpL == 15) ret += "F";
+                    if (yyy == 10) yyyyyyy += "A";
+                    if (yyy == 11) yyyyyyy += "B";
+                    if (yyy == 12) yyyyyyy += "C";
+                    if (yyy == 13) yyyyyyy += "D";
+                    if (yyy == 14) yyyyyyy += "E";
+                    if (yyy == 15) yyyyyyy += "F";
                 }
 
-                return ret;
+                return yyyyyyy;
             }
             catch (Exception ex)
             {
@@ -270,7 +260,7 @@ namespace WiaCons
             }
         }
 
-        public static byte[] StrHexToByte(string hex)
+        public static byte[] FunkFunk7(string hex)
         {
             return Enumerable.Range(0, hex.Length)
                              .Where(x => x % 2 == 0)

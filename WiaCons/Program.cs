@@ -34,16 +34,16 @@ namespace WiaCons
 
         static Stopwatch swtemp_10 = new Stopwatch(); 
         static Stopwatch swtemp_11 = new Stopwatch();
-        static TimerCallback titemp_12 = new TimerCallback(tmrDutControl_Tick);
+        static TimerCallback titemp_12 = new TimerCallback(Func_2);
         static int dctemp_13 = 5 * 60 * 1000;
         static Timer tmtemp_14 = new Timer(titemp_12, null, dctemp_13, dctemp_13);
-        static TimerCallback titemp_15 = new TimerCallback(autoConnect_Tick);
+        static TimerCallback titemp_15 = new TimerCallback(Func_36);
         static int actemp_16 = 10000;
         static Timer autemp_17t = new Timer(titemp_15, null, actemp_16, actemp_16);
         static bool neetemp_18 = true;
         static int dutemp_19 = 0;
         static string dutemp_20 = "";
-        public static int? messtemp_21 = null;
+        public static int? ddddddddddddddddddddd = null;
         static int retemp_22 = 15000;
         static int titemp_23 = 5000;
         public const int MSG1 = 1, MSG2 = 0, MSG3 = -1, PO4 = -2;
@@ -60,7 +60,7 @@ namespace WiaCons
 
 
         //// =========================================================================================================
-        // Переменные для работы сервером виалоновстким 
+
 
         public static List<string> bltemp_27 = new List<string>();
         //public static System.Windows.Forms.Timer timer_stopper;
@@ -71,23 +71,23 @@ namespace WiaCons
 
         static void Main(string[] args)
         {
-            tmrDutControl_TutnOff();
-            autoConnect_TurnOff();
+            Func_6();
+            Func_8();
 #if !DEBUG
-            CheckLicense();
+            Func_1();
 #endif
 if (dtemp_1 == 1)
             dctemp_13 = 1 * 30 * 1000;
 
-            Dutyara.GetPorts();
+            Dutyara.FuncFunk2();
             duttemp_26.Add(new Dutyara(33722, 9600));
             duttemp_26.Add(new Dutyara(22733, 9600));
 
-            Dutyara.GetPorts();
-            tmrDutControl_TutnOn();
-            autoConnect_TurnOn();
+            Dutyara.FuncFunk2();
+            Func_7();
+            Func_9();
 
-            tmtemp_9 = new System.Threading.Timer(new TimerCallback(PingTimerCallback), null, System.Threading.Timeout.Infinite, System.Threading.Timeout.Infinite);
+            tmtemp_9 = new System.Threading.Timer(new TimerCallback(Funk_31), null, System.Threading.Timeout.Infinite, System.Threading.Timeout.Infinite);
             var base_path = Environment.GetEnvironmentVariable("USERPROFILE");
             if (base_path == null)
                 base_path = Environment.GetEnvironmentVariable("HOME");
@@ -124,12 +124,9 @@ if (dtemp_1 == 1)
             Console.ReadKey();
         }
 
-        private static void CheckLicense()
+        private static void Func_1()
         {
-            string cptemp_32 = GetCpuIdLinux();
-            //string cpu_id = "000000006bd6f118";
-            //StreamWriter writer = new StreamWriter("SomeFile.txt");
-            //if (cpu_id != "000000006bd6f118")
+            string cptemp_32 = Func_10();
             if (cptemp_32 != "1000000013d0b0e1")
             {
                 Console.WriteLine("Вы нарушили правила лицензионного соглашения, программа заблокирована");
@@ -139,19 +136,19 @@ if (dtemp_1 == 1)
            
         }
 
-        private static void tmrDutControl_Tick(object state)
+        private static void Func_2(object state)
         {
             neetemp_18 = true;
             while (neetemp_18)
             {
                 // Console.WriteLine(sw.ElapsedMilliseconds);
-                if (Dutyara.opened)
+                if (Dutyara.temptemp_1)
                 {
                     swtemp_10.Restart();
                     SetDropend();
                     
-                    duttemp_26[dutemp_19].GetData();
-                    duttemp_26[dutemp_19].SendMsg();
+                    duttemp_26[dutemp_19].FuncFunc1();
+                    duttemp_26[dutemp_19].FunkFunk4();
                     //GetAnsver();
                 }
                 else
@@ -161,50 +158,50 @@ if (dtemp_1 == 1)
                     //dut_data = "44N0=+210=01345.27=00632.55=094";
                     if (dutemp_20 != "")
                     {
-                        CheckData(dutemp_20);
+                        Func_11(dutemp_20);
                     }
                     // Так должно быть лучше, но нужно проверит, а на это нет времени:
                     else
                     if (swtemp_10.ElapsedMilliseconds > titemp_23)
                     {
-                        messtemp_21 = MSG2;
+                        ddddddddddddddddddddd = MSG2;
                     }
 
-                    switch (messtemp_21)
+                    switch (ddddddddddddddddddddd)
                     {
                         case MSG2:
-                            duttemp_26[dutemp_19].msg_cont.id = duttemp_26[dutemp_19].Id.ToString();
-                            duttemp_26[dutemp_19].msg_cont.water = FAIL_1;
-                            duttemp_26[dutemp_19].msg_cont.fuel = FAIL_1;
-                            duttemp_26[dutemp_19].msg_cont.temp = FAIL_1;
+                            duttemp_26[dutemp_19].temptemp_9.id = duttemp_26[dutemp_19].Id.ToString();
+                            duttemp_26[dutemp_19].temptemp_9.water = FAIL_1;
+                            duttemp_26[dutemp_19].temptemp_9.fuel = FAIL_1;
+                            duttemp_26[dutemp_19].temptemp_9.temp = FAIL_1;
                             //dut_data = "44N0=65536=65536=65536=094";
                             break;
                         case MSG3:
-                            duttemp_26[dutemp_19].msg_cont.id = duttemp_26[dutemp_19].Id.ToString();
-                            duttemp_26[dutemp_19].msg_cont.water = DROP_2;
-                            duttemp_26[dutemp_19].msg_cont.fuel = DROP_2;
-                            duttemp_26[dutemp_19].msg_cont.temp = DROP_2;
+                            duttemp_26[dutemp_19].temptemp_9.id = duttemp_26[dutemp_19].Id.ToString();
+                            duttemp_26[dutemp_19].temptemp_9.water = DROP_2;
+                            duttemp_26[dutemp_19].temptemp_9.fuel = DROP_2;
+                            duttemp_26[dutemp_19].temptemp_9.temp = DROP_2;
                             break;
                         case PO4:
-                            duttemp_26[dutemp_19].msg_cont.id = duttemp_26[dutemp_19].Id.ToString();
-                            duttemp_26[dutemp_19].msg_cont.water = PORT_3E;
-                            duttemp_26[dutemp_19].msg_cont.fuel = PORT_3E;
-                            duttemp_26[dutemp_19].msg_cont.temp = PORT_3E;
+                            duttemp_26[dutemp_19].temptemp_9.id = duttemp_26[dutemp_19].Id.ToString();
+                            duttemp_26[dutemp_19].temptemp_9.water = PORT_3E;
+                            duttemp_26[dutemp_19].temptemp_9.fuel = PORT_3E;
+                            duttemp_26[dutemp_19].temptemp_9.temp = PORT_3E;
                             break;
                         default:
                             break;
                     }
 
-                    if (messtemp_21 != null)
+                    if (ddddddddddddddddddddd != null)
                     {
                         //if (message_status != MSG_SUCCESS)
-                        dutemp_20 = duttemp_26[dutemp_19].msg_cont.id + "N0=" + duttemp_26[dutemp_19].msg_cont.temp + "=" +
-                                        duttemp_26[dutemp_19].msg_cont.fuel + "=" + duttemp_26[dutemp_19].msg_cont.water + "=094"; //"44N0=65536=65536=65536=094";
+                        dutemp_20 = duttemp_26[dutemp_19].temptemp_9.id + "N0=" + duttemp_26[dutemp_19].temptemp_9.temp + "=" +
+                                        duttemp_26[dutemp_19].temptemp_9.fuel + "=" + duttemp_26[dutemp_19].temptemp_9.water + "=094"; //"44N0=65536=65536=65536=094";
                         Console.WriteLine(dutemp_20);
 
-                        GoToNextDut(ref _temp_4);
+                        Func_12(ref _temp_4);
                     }
-                    else dutemp_20 = duttemp_26[dutemp_19].GetData();
+                    else dutemp_20 = duttemp_26[dutemp_19].FuncFunc1();
                     Thread.Sleep(100);
                     //var rr = timer_stopper.Enabled;
                 }
@@ -214,122 +211,120 @@ if (dtemp_1 == 1)
 
         private static void SetDropend()
         {
-            int templ = 25;
-            string gfs = "*set_temp_Celsium*";
-            bool droper = GetAnsver(templ, gfs);
-            Dutyara.opened = droper;
+            int qqq = 25;
+            string www = "*set_temp_Celsium*";
+            bool eee = Func_4(qqq, www);
+            Dutyara.temptemp_1 = eee;
         }
 
-        private static bool GetAnsver(int templ, string gfs, int rrrr = 24, int gefest = 12)
+        private static bool Func_4(int templ, string gfs, int rrrr = 24, int gefest = 12)
         {
-            string new_temp = "";
-            bool flag = true;
+            string qqq = "";
+            bool www = true;
             if (Math.E - templ < 18)
             {
-                new_temp.Concat(gfs).Concat("Con"); ;
+                qqq.Concat(gfs).Concat("Con"); ;
             }
             else
             {
                 gfs.Concat("Faringate");
-                new_temp = "&%#^%" + gfs + new_temp;
+                qqq = "&%#^%" + gfs + qqq;
             }
-            if (new_temp.Length != 0 && 25 > 24 && 10 < gefest)
+            if (qqq.Length != 0 && 25 > 24 && 10 < gefest)
             {
-                flag = !(!((((true ^ true) || (true ^ false)) && true) ^ (false ^ true)) && true) ;
+                www = !(!((((true ^ true) || (true ^ false)) && true) ^ (false ^ true)) && true) ;
             }
             else
             {
-                flag = false;
+                www = false;
             }
-            return flag;
+            return www;
         }
 
-        // Стопперы и запускаторы таймеров
 
-        static void tmrDutControl_TutnOff()
+        static void Func_6()
         {
             tmtemp_14.Change(Timeout.Infinite, Timeout.Infinite);
         }
-        static void tmrDutControl_TutnOn()
+        static void Func_7()
         {
             tmtemp_14.Change(dctemp_13, dctemp_13);
         }
 
-        static void autoConnect_TurnOff()
+        static void Func_8()
         {
             autemp_17t.Change(Timeout.Infinite, Timeout.Infinite);
         }
 
-        static void autoConnect_TurnOn()
+        static void Func_9()
         {
             autemp_17t.Change(actemp_16, actemp_16);
         }
 
-        static string GetCpuIdLinux()
+        static string Func_10()
         {
             //  Open the file into a StreamReader
-              StreamReader file_info = File.OpenText("/proc/cpuinfo");
+              StreamReader qqq = File.OpenText("/proc/cpuinfo");
             // Read the file into a string
-            string file_text = file_info.ReadToEnd();
-            file_info.Close();
-            string[] subs = file_text.Split('\n');
-            Dictionary<string, string> cpu_params = new Dictionary<string, string>();
+            string www = qqq.ReadToEnd();
+            qqq.Close();
+            string[] subs = www.Split('\n');
+            Dictionary<string, string> eeee = new Dictionary<string, string>();
             foreach (var item in subs)
             {
-                string[] temp = item.Split(':');
+                string[] rrr = item.Split(':');
                 try
                 {
-                    cpu_params.Add(temp[0].Trim(), temp[1].Trim());
+                    eeee.Add(rrr[0].Trim(), rrr[1].Trim());
                 }
                 catch (Exception ex)
                 {
 
                 }
             }
-            return cpu_params["Serial"];
+            return eeee["Serial"];
         }
 
         // Проверка полученных данных от ДУТа
         // в случае, если данные дошли в целосности - отправляет их получателю
         // в случае если данные пришли в повреждённом виде - отправляем получателю соответствующий код ошибки
-        private static void CheckData(string input_text)
+        private static void Func_11(string input_text)
         {
-            string[] dut_data_arr = input_text.Split('=');
-            int arr_len = dut_data_arr.Length;
-            if (arr_len != 5)
+            string[] aaa = input_text.Split('=');
+            int sssssssssssssssss = aaa.Length;
+            if (sssssssssssssssss != 5)
             {
-                messtemp_21 = MSG3;
+                ddddddddddddddddddddd = MSG3;
             }
             else
             {
                 // Проверяем является ли айдишник числом
-                string dut_id = dut_data_arr[0].Substring(0, dut_data_arr[0].Length - 2);
+                string ffffffffffffff = aaa[0].Substring(0, aaa[0].Length - 2);
                 // dut_id = dut_id.Substring(1, dut_id.Length-2);
                 float i = 0;
-                var bb = float.TryParse(dut_id, out i);
+                var bb = float.TryParse(ffffffffffffff, out i);
                 if (!bb)
                 {
-                    messtemp_21 = MSG3; return;
+                    ddddddddddddddddddddd = MSG3; return;
                 }
-                if (dut_data_arr[1][0] != '+' && dut_data_arr[1][0] != '-')
+                if (aaa[1][0] != '+' && aaa[1][0] != '-')
                 {
-                    messtemp_21 = MSG3; return;
+                    ddddddddddddddddddddd = MSG3; return;
                 }
-                bb = float.TryParse(dut_data_arr[2].Replace(".", ","), out i);
+                bb = float.TryParse(aaa[2].Replace(".", ","), out i);
                 if (!bb)
                 {
-                    messtemp_21 = MSG3; return;
+                    ddddddddddddddddddddd = MSG3; return;
                 }
-                bb = float.TryParse(dut_data_arr[3].Replace(".", ","), out i);
+                bb = float.TryParse(aaa[3].Replace(".", ","), out i);
                 if (!bb)
                 {
-                    messtemp_21 = MSG3; return;
+                    ddddddddddddddddddddd = MSG3; return;
                 }
-                // Если айдишник отличается от запрашиваемого - данные считаются битыми, т.к. пришли от другого ДУТа
                 var idish = duttemp_26[dutemp_19].Id.ToString();
-                if (dut_id != idish)
+                if (ffffffffffffff != idish)
                 {
-                    messtemp_21 = MSG3; Console.WriteLine("Err!"); return;
+                    ddddddddddddddddddddd = MSG3; Console.WriteLine("Err!"); return;
                     // Альтернативный способ решения: 
                     //message_status = null; return;
 
@@ -341,55 +336,55 @@ if (dtemp_1 == 1)
                     //    irr++;
                     //}
                 }
-                // ХЗ что хз зачем, но вдроуг пригодится
+                
                 //bb = float.TryParse(dut_data_arr[4].Replace(".", ","), out i);
                 //if (!bb)
                 //{
                 //    message_status = MSG_DROP; return;
                 //}
 
-                messtemp_21 = MSG1;
-                duttemp_26[dutemp_19].msg_cont.id = dut_id;
-                duttemp_26[dutemp_19].msg_cont.fuel = ViaDataFormater.CorrectoinNull(dut_data_arr[2], duttemp_26[dutemp_19].Corrector);
-                duttemp_26[dutemp_19].msg_cont.water = ViaDataFormater.CorrectoinNull(dut_data_arr[3], duttemp_26[dutemp_19].Corrector);
-                duttemp_26[dutemp_19].msg_cont.temp = dut_data_arr[1];
+                ddddddddddddddddddddd = MSG1;
+                duttemp_26[dutemp_19].temptemp_9.id = ffffffffffffff;
+                duttemp_26[dutemp_19].temptemp_9.fuel = ViaDataFormater.CorrectoinNull(aaa[2], duttemp_26[dutemp_19].Corrector);
+                duttemp_26[dutemp_19].temptemp_9.water = ViaDataFormater.CorrectoinNull(aaa[3], duttemp_26[dutemp_19].Corrector);
+                duttemp_26[dutemp_19].temptemp_9.temp = aaa[1];
 
             }
             return;
         }
 
-        static void GoToNextDut(ref MessagesCommunicator _mmc)
+        static void Func_12(ref MessagesCommunicator _mmc)
         {
-            Dutyara.need_a_stop = true;
-            Dutyara.opened = true;
+            Dutyara.temptemp_3 = true;
+            Dutyara.temptemp_1 = true;
             dutemp_20 = "";
             dutemp_19 = (dutemp_19 + 1);
             if (dutemp_19 >= duttemp_26.Count)
             {
                 // need_request = false;
                 dutemp_19 %= duttemp_26.Count;
-                SendToVialon(ref _mmc);
+                Func_13(ref _mmc);
                 neetemp_18 = false;
             }
-            messtemp_21 = null;
+            ddddddddddddddddddddd = null;
         }
 
-        private static void SendToVialon(ref MessagesCommunicator _mmc)
+        private static void Func_13(ref MessagesCommunicator _mmc)
         {
             if (ztrmp_2)
             {
                 //if (black_box.Count() > 2)
                 //zateya = false;
-                string params_string = String.Empty;
-                int dl_len = duttemp_26.Count;
-                Dutyara counter;
-                for (int iterator = 0; iterator < dl_len; iterator++)
+                string wwwwwww = String.Empty;
+                int eeeeeee = duttemp_26.Count;
+                Dutyara rrrrrr;
+                for (int iterator = 0; iterator < eeeeeee; iterator++)
                 {
-                    counter = duttemp_26[iterator];
-                    params_string += ViaDataFormater.GenerateString(counter, iterator);
+                    rrrrrr = duttemp_26[iterator];
+                    wwwwwww += ViaDataFormater.GenerateString(rrrrrr, iterator);
                 }
-                params_string = params_string.Remove(params_string.Length - 1);
-                var dts = DateTime.Now.ToUniversalTime().ToString("ddMMyy;HHmmss");
+                wwwwwww = wwwwwww.Remove(wwwwwww.Length - 1);
+                var zzzzzzzzzzzzzzzzzzzzzzzzz = DateTime.Now.ToUniversalTime().ToString("ddMMyy;HHmmss");
                 //MessageBox.Show(params_string);
                 //SendDutData(params_string, _mmc);
                 //Thread.Sleep(1000);
@@ -397,8 +392,8 @@ if (dtemp_1 == 1)
                 //Thread.Sleep(1000);
                 //SendDutData(params_string, _mmc);
                 //Thread.Sleep(1000);
-                bool conn = false;
-                istemp_24 = GetConnectedStatus();
+                bool ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc = false;
+                istemp_24 = Func_14();
 
                 
                 if (istemp_24 != oldtemp_25)
@@ -412,7 +407,7 @@ if (dtemp_1 == 1)
                     }
                     else
                     {
-                        Disconnect();
+                        Funk_35();
 
                         //_mc = null;
                         Console.ForegroundColor = ConsoleColor.Blue;
@@ -425,16 +420,16 @@ if (dtemp_1 == 1)
                 }
                 if (_mmc != null)
                 {
-                    conn = _mmc.IsConnected;
+                    ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc = _mmc.IsConnected;
                 }
                 metka: 
-                if (conn)
+                if (ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc)
                 {
                     
                     //timer_stopper.Enabled = false;
                     //var gg = timer_stopper.Interval;
                     
-                    bltemp_27.Add(params_string + "zuzuzu" + dts);
+                    bltemp_27.Add(wwwwwww + "zuzuzu" + zzzzzzzzzzzzzzzzzzzzzzzzz);
                     if (!File.Exists(path))
                     {
                         File.Create(path);
@@ -444,7 +439,7 @@ if (dtemp_1 == 1)
                     //LinuxLog(params_string + "zuzuzu" + dts.Insert(2, ".").Insert(5, ".").Insert(11, ":").Insert(14, ":"));
 //#endif
 //#if DEBUG
-                    WindowsLog(params_string + "zuzuzu" + dts.Insert(2, ".").Insert(5, ".").Insert(11, ":").Insert(14, ":"));;
+                    WindowsLog(wwwwwww + "zuzuzu" + zzzzzzzzzzzzzzzzzzzzzzzzz.Insert(2, ".").Insert(5, ".").Insert(11, ":").Insert(14, ":"));;
 //#endif
 
 
@@ -481,7 +476,7 @@ if (dtemp_1 == 1)
                         foreach (var item in bltemp_27)
                         {
                             Console.WriteLine(item);
-                            SendDutData(item, _mmc);
+                            Func_30(item, _mmc);
                             Thread.Sleep(1000); // A nado?
                         }
                         bltemp_27.Clear();
@@ -490,9 +485,9 @@ if (dtemp_1 == 1)
                 }
                 else
                 {
-                    var tt = dts.Insert(2, ".").Insert(5, ".").Insert(11, ":").Insert(14, ":");
+                    var tt = zzzzzzzzzzzzzzzzzzzzzzzzz.Insert(2, ".").Insert(5, ".").Insert(11, ":").Insert(14, ":");
                     
-                    bltemp_27.Add(params_string + "zuzuzu" + dts);
+                    bltemp_27.Add(wwwwwww + "zuzuzu" + zzzzzzzzzzzzzzzzzzzzzzzzz);
                     if (!File.Exists(path))
                     {
                         File.Create(path);
@@ -501,7 +496,7 @@ if (dtemp_1 == 1)
                     //LinuxLog(params_string + "zuzuzu" + dts.Insert(2, ".").Insert(5, ".").Insert(11, ":").Insert(14, ":"));
 //#endif
 //#if DEBUG
-                    WindowsLog(params_string + "zuzuzu" + dts.Insert(2, ".").Insert(5, ".").Insert(11, ":").Insert(14, ":"));;
+                    WindowsLog(wwwwwww + "zuzuzu" + zzzzzzzzzzzzzzzzzzzzzzzzz.Insert(2, ".").Insert(5, ".").Insert(11, ":").Insert(14, ":"));;
 //#endif
 
                     Console.WriteLine("Add");
@@ -509,16 +504,16 @@ if (dtemp_1 == 1)
             }
         }
 
-        static bool GetConnectedStatus()
+        static bool Func_14()
         {
-            Ping myPing = new Ping();
-            String host = "google.com";
-            byte[] buffer = new byte[32];
-            int timeout = 1000;
-            PingOptions pingOptions = new PingOptions();
+            Ping qqqqqqqqqqqqqqqq = new Ping();
+            String wwwwwwwwwwwwwwwwwwww = "google.com";
+            byte[] eeeeeeeeeeeeeeeeeee = new byte[32];
+            int rrrrrrrrrrrrrrrrrrrrrrrr = 1000;
+            PingOptions ttttttttttttttttttt = new PingOptions();
             try
             {
-                PingReply reply = myPing.Send(host, timeout, buffer, pingOptions);
+                PingReply reply = qqqqqqqqqqqqqqqq.Send(wwwwwwwwwwwwwwwwwwww, rrrrrrrrrrrrrrrrrrrrrrrr, eeeeeeeeeeeeeeeeeee, ttttttttttttttttttt);
                 if (reply.Status == IPStatus.Success)
                 {
                     return true;
@@ -589,11 +584,11 @@ if (dtemp_1 == 1)
         {
             Thread.Sleep(1000);
             // Open the file into a StreamReader
-            StreamReader file = File.OpenText(path);
+            StreamReader yyyyyyyyyyyyyyyyyyyyyyyyy = File.OpenText(path);
             // Read the file into a string
-            string s = file.ReadToEnd();
+            string s = yyyyyyyyyyyyyyyyyyyyyyyyy.ReadToEnd();
             // Close the file so it can be accessed again.
-            file.Close();
+            yyyyyyyyyyyyyyyyyyyyyyyyy.Close();
 
             // Add a line to the text
             s += msg + "\n";
@@ -605,7 +600,7 @@ if (dtemp_1 == 1)
             writer.Close();
         }
 
-        async static void SendDutData(string ips_params, MessagesCommunicator _mmc)
+        async static void Func_30(string ips_params, MessagesCommunicator _mmc)
         {
             try
             {
@@ -615,24 +610,19 @@ if (dtemp_1 == 1)
                     try
                     {
                         bool gg = true;
-                    // Тут работа кипит
-                    var l_dt = MyParseDateTime(DateTime.Now.ToUniversalTime());
+                    var cccccccccccccccccccccccccc = MyParseDateTime(DateTime.Now.ToUniversalTime());
                         string[] _itemp_33 = ips_params.Split(new string[] { "zuzuzu" }, StringSplitOptions.None);
-                    //string t_msg = "#D#"+ l_dt[0] + ";"+ l_dt[1] + ";;;;;;;;;;;;;;";
-                    //string t_msg1 = "#D#" + DateTime.Now.ToUniversalTime().ToString("ddMMyy;HHmmss") + ";;;;;;;;;;;;;;";
-                    string t_msg = "#D#" + _itemp_33[1] + ";;;;;;;;;;;;;;";
-                        t_msg += _itemp_33[0];
+                    string llllllllllllllllllllllllll = "#D#" + _itemp_33[1] + ";;;;;;;;;;;;;;";
+                        llllllllllllllllllllllllll += _itemp_33[0];
 
-                    //var text = this.tbSendRaw.Text.Trim();
-                    //this.tbSendRaw.Focus();
-                    //this.tbSendRaw.SelectAll();
+                    //v
                     if (gg == true)
                         {
-                            var msg = WialonIPS.Message.Parse(t_msg);
-                            var vv = msg.GetType();
-                            if (msg.Success)
+                            var nnnnnnnnnnnnnnnnnnnnnnnnnnnnnn = WialonIPS.Message.Parse(llllllllllllllllllllllllll);
+                            var vv = nnnnnnnnnnnnnnnnnnnnnnnnnnnnnn.GetType();
+                            if (nnnnnnnnnnnnnnnnnnnnnnnnnnnnnn.Success)
                             {
-                                _mmc.Send(msg);
+                                _mmc.Send(nnnnnnnnnnnnnnnnnnnnnnnnnnnnnn);
                             }
                             else
                             {
@@ -664,13 +654,13 @@ if (dtemp_1 == 1)
         // Получение текущей даты для пакетов.
         static List<string> MyParseDateTime(DateTime dt)
         {
-            List<string> list_dt = new List<string>();
+            List<string> yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy = new List<string>();
             var dd = dt.ToString("d").Replace(".", "");
             dd = dd.Substring(0, 4) + dd.Substring(6, 2);
             var tt = dt.ToString("T").Replace(":", "");
-            list_dt.Add(dd);
-            list_dt.Add(tt);
-            return list_dt;
+            yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy.Add(dd);
+            yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy.Add(tt);
+            return yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy;
         }
 
 
@@ -680,7 +670,7 @@ if (dtemp_1 == 1)
 
 
 
-        static private void PingTimerCallback(object state)
+        static private void Funk_31(object state)
         {
             try
             {
@@ -695,7 +685,7 @@ if (dtemp_1 == 1)
         }
 
 
-        static void ConnectClick()
+        static void Funk_32()
         {
             try
             {
@@ -710,10 +700,10 @@ if (dtemp_1 == 1)
                     _temp_4.Dispose();
 
                 _temp_4 = new MessagesCommunicator(server_1.Hotemp_40, server_1.Potemp_41);
-                _temp_4.OnConnect += new MessageConnectorOperation(_mc_OnConnect);
-                _temp_4.OnDisconnect += new MessageConnectorOperation(_mc_OnDisconnect);
-                _temp_4.OnReceive += new MessageOperationDelegate(_mc_OnReceive);
-                _temp_4.OnSent += new MessageOperationDelegate(_mc_OnSent);
+                _temp_4.OnConnect += new MessageConnectorOperation(Func_37);
+                _temp_4.OnDisconnect += new MessageConnectorOperation(Func_38);
+                _temp_4.OnReceive += new MessageOperationDelegate(Funk_39);
+                _temp_4.OnSent += new MessageOperationDelegate(Funk_40);
                 _temp_4.Connect();
             }
             catch (DeviceNotSelected)
@@ -729,7 +719,7 @@ if (dtemp_1 == 1)
             }
         }
 
-        static void Disconnect()
+        static void Funk_35()
         {
             try
             {
@@ -750,15 +740,15 @@ if (dtemp_1 == 1)
             }
         }
         // ТТУ вносим поправки !!!!!!
-        static private void autoConnect_Tick(object state)
+        static private void Func_36(object state)
         {
-            bool conn = false;
+            bool ggggggggggggggggggg = false;
             //isConnectedStatus = GetConnectedStatus();
             if (istemp_24)
             {
                 if (_temp_4 == null || !_temp_4.IsConnected)
                 {
-                    ConnectClick();
+                    Funk_32();
                 }
                 else
                     Console.WriteLine("Jopa");
@@ -768,7 +758,7 @@ if (dtemp_1 == 1)
         }
 
 
-        static void _mc_OnConnect(MessagesCommunicator comm)
+        static void Func_37(MessagesCommunicator comm)
         {
             try
             {
@@ -786,7 +776,7 @@ if (dtemp_1 == 1)
             }
         }
 
-        static void _mc_OnDisconnect(MessagesCommunicator comm)
+        static void Func_38(MessagesCommunicator comm)
         {
             try
             {
@@ -802,7 +792,7 @@ if (dtemp_1 == 1)
         }
 
 
-        static void _mc_OnReceive(MessagesCommunicator comm, WialonIPS.Message msg)
+        static void Funk_39(MessagesCommunicator comm, WialonIPS.Message msg)
         {
             try { 
 
@@ -811,7 +801,7 @@ if (dtemp_1 == 1)
                 Console.WriteLine((msg as WialonIPS.MessageMessage).Text);
                 //this.Messages.Received((msg as WialonIPS.MessageMessage).Text);
             if (msg.MsgType == MessageType.LoginAns && !(msg as LoginAnsMessage).Success)
-                Disconnect();
+                Funk_35();
             }
             catch (Exception ex)
             {
@@ -821,7 +811,7 @@ if (dtemp_1 == 1)
             }
         }
 
-        static void _mc_OnSent(MessagesCommunicator comm, WialonIPS.Message msg)
+        static void Funk_40(MessagesCommunicator comm, WialonIPS.Message msg)
         {
             try { 
             //this.Log.PostHead("<<<", msg.ToString());

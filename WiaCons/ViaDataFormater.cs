@@ -12,8 +12,8 @@ namespace WiaCons
         {
             //string rtn = "id-" + (iter + 1) + ":3:" + dut.Id + ",fuel-" + (iter + 1) + ":2:" + FormatFluid(dut.msg_cont.fuel)
             //    + ",water-" + (iter + 1) + ":2:" + FormatFluid(dut.msg_cont.water) + ",temp-" + (iter + 1) + ":2:" + FormatTemp(dut.msg_cont.temp) + ",";
-            string rtn = "id" + (iter + 1) + ":3:" + dut.Id + ",fuel" + (iter + 1) + ":2:" + FormatFluid(dut.msg_cont.fuel)
-                + ",water" + (iter + 1) + ":2:" + FormatFluid(dut.msg_cont.water) + ",temp" + (iter + 1) + ":2:" + FormatTemp(dut.msg_cont.temp) + ",";
+            string rtn = "id" + (iter + 1) + ":3:" + dut.Id + ",fuel" + (iter + 1) + ":2:" + FormatFluid(dut.temptemp_9.fuel)
+                + ",water" + (iter + 1) + ":2:" + FormatFluid(dut.temptemp_9.water) + ",temp" + (iter + 1) + ":2:" + FormatTemp(dut.temptemp_9.temp) + ",";
             return rtn;
         }
 
