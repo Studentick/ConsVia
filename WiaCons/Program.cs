@@ -37,7 +37,7 @@ namespace WiaCons
         static Stopwatch sw_request = new Stopwatch(); // Для проверки необходимости повторного опроса ДУТов
         static TimerCallback timeCB = new TimerCallback(tmrDutControl_Tick);
         // Минимум 15 секунд, но это не точно (с тех пор утекло много воды)
-        static int dc_timer = 3 * 60 * 1000;
+        static int dc_timer = 5 * 60 * 1000;
         static Timer tmrDutControl = new Timer(timeCB, null, dc_timer, dc_timer);
         static TimerCallback tibeConn = new TimerCallback(autoConnect_Tick);
         static int ac_timer = 10000;
@@ -680,17 +680,20 @@ if (deb == 1)
                 Console.ResetColor();
             }
         }
-
+        // ТТУ вносим поправки !!!!!!
         static private void autoConnect_Tick(object state)
         {
             bool conn = false;
-
-            if (_mc == null || !_mc.IsConnected)
+            //isConnectedStatus = GetConnectedStatus();
+            if (isConnectedStatus)
             {
-                ConnectClick();
+                if (_mc == null || !_mc.IsConnected)
+                {
+                    ConnectClick();
+                }
+                else
+                    Console.WriteLine("Jopa");
             }
-            else
-                Console.WriteLine("Jopa");
 
             //bool bb =this._mc.IsConnected;
         }
