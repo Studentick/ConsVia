@@ -15,47 +15,45 @@ namespace WiaCons
 {
     class Program
     {
+        static int epic_param_1 = 22, epic_param_3 = 21, epic_param_2 = 23, epic_param_4 = 24;
         static string path = "LogSender.txt";
-        static int deb = 2;
-        static bool zateya = true;
-        static private int _ping_interval = 240000; // 4 minutes
-        static private MessagesCommunicator _mc = null;
-        static private bool _closed = false, _ready = false;
-        static ServerInfo selected_server;
-        static DeviceInfo selected_device;
-        static private string _settings_file_name, _log_file_name;
+        static int dtemp_1 = 2;
+        static bool ztrmp_2 = true;
+        static private int _temp_3 = 240000; 
+        static private MessagesCommunicator _temp_4 = null;
+        static private bool _ctemp_5 = false, _rtemp_6 = false;
+        static ServerInfo server_1;
+        static DeviceInfo server_2;
+        static private string _setemp_7, _lotemp_8;
         //private CMessages Messages;
-        static private System.Threading.Timer tmrPing;
+        static private System.Threading.Timer tmtemp_9;
                 
-        static public CSettings Settings { get; private set; }
+        static public CSettings Setemp_30 { get; private set; }
 
         /// =========================================================================================================
-        ///Переменные для работы с дутами
-        ///
-        // Делегат для типа Timer
-        static Stopwatch sw_timeout = new Stopwatch(); // Для проверки потраченного времени на опрос ДУТа
-        static Stopwatch sw_request = new Stopwatch(); // Для проверки необходимости повторного опроса ДУТов
-        static TimerCallback timeCB = new TimerCallback(tmrDutControl_Tick);
-        // Минимум 15 секунд, но это не точно (с тех пор утекло много воды)
-        static int dc_timer = 5 * 60 * 1000;
-        static Timer tmrDutControl = new Timer(timeCB, null, dc_timer, dc_timer);
-        static TimerCallback tibeConn = new TimerCallback(autoConnect_Tick);
-        static int ac_timer = 10000;
-        static Timer autoConnect = new Timer(tibeConn, null, ac_timer, ac_timer);
-        static bool need_request = true;
-        static int dut_selected = 0;
-        static string dut_data = "";
-        public static int? message_status = null;
-        static int request_time = 15000;
-        static int time_to_dut_read = 5000;
-        public const int MSG_SUCCESS = 1, MSG_FAIL = 0, MSG_DROP = -1, PORT_DROP = -2;
-        const string FAIL_VALUE = "65536" /*Не верный формат данных*/, DROP_VALUE = "65533" /*Часть данных была потеряна*/,
-            PORT_VALUE = "65530" /*Ошибка COM-порта*/;
-        private static bool stopped_request = false;
 
-        static bool isConnectedStatus = false, oldConnectedStatus = false;
+        static Stopwatch swtemp_10 = new Stopwatch(); 
+        static Stopwatch swtemp_11 = new Stopwatch();
+        static TimerCallback titemp_12 = new TimerCallback(tmrDutControl_Tick);
+        static int dctemp_13 = 5 * 60 * 1000;
+        static Timer tmtemp_14 = new Timer(titemp_12, null, dctemp_13, dctemp_13);
+        static TimerCallback titemp_15 = new TimerCallback(autoConnect_Tick);
+        static int actemp_16 = 10000;
+        static Timer autemp_17t = new Timer(titemp_15, null, actemp_16, actemp_16);
+        static bool neetemp_18 = true;
+        static int dutemp_19 = 0;
+        static string dutemp_20 = "";
+        public static int? messtemp_21 = null;
+        static int retemp_22 = 15000;
+        static int titemp_23 = 5000;
+        public const int MSG1 = 1, MSG2 = 0, MSG3 = -1, PO4 = -2;
+        const string FAIL_1 = "65536" , DROP_2 = "65533" ,
+            PORT_3E = "65530" ;
+        private static bool stotemp_24 = false;
 
-        static List<Dutyara> dut_list = new List<Dutyara>();
+        static bool istemp_24 = false, oldtemp_25 = false;
+
+        static List<Dutyara> duttemp_26 = new List<Dutyara>();
 
         /// =========================================================================================================
 
@@ -64,7 +62,7 @@ namespace WiaCons
         //// =========================================================================================================
         // Переменные для работы сервером виалоновстким 
 
-        public static List<string> black_box = new List<string>();
+        public static List<string> bltemp_27 = new List<string>();
         //public static System.Windows.Forms.Timer timer_stopper;
 
         //// =========================================================================================================
@@ -78,24 +76,24 @@ namespace WiaCons
 #if !DEBUG
             CheckLicense();
 #endif
-if (deb == 1)
-            dc_timer = 1 * 30 * 1000;
+if (dtemp_1 == 1)
+            dctemp_13 = 1 * 30 * 1000;
 
             Dutyara.GetPorts();
-            dut_list.Add(new Dutyara(33722, 9600));
-            dut_list.Add(new Dutyara(22733, 9600));
+            duttemp_26.Add(new Dutyara(33722, 9600));
+            duttemp_26.Add(new Dutyara(22733, 9600));
 
             Dutyara.GetPorts();
             tmrDutControl_TutnOn();
             autoConnect_TurnOn();
 
-            tmrPing = new System.Threading.Timer(new TimerCallback(PingTimerCallback), null, System.Threading.Timeout.Infinite, System.Threading.Timeout.Infinite);
+            tmtemp_9 = new System.Threading.Timer(new TimerCallback(PingTimerCallback), null, System.Threading.Timeout.Infinite, System.Threading.Timeout.Infinite);
             var base_path = Environment.GetEnvironmentVariable("USERPROFILE");
             if (base_path == null)
                 base_path = Environment.GetEnvironmentVariable("HOME");
             if (base_path == null)
                 base_path = Path.GetDirectoryName(Environment.CurrentDirectory);
-            _settings_file_name = Path.Combine(base_path, ".wialon_ips_emulator.settings");
+            _setemp_7 = Path.Combine(base_path, ".wialon_ips_emulator.settings");
 
             if (!File.Exists(path))
             {
@@ -103,21 +101,21 @@ if (deb == 1)
             }
             try
             {
-                Settings = CSettings.Load(_settings_file_name);
+                Setemp_30 = CSettings.Load(_setemp_7);
                 Console.WriteLine("Emulator" + "Settings loaded successfully");
             }
             catch (Exception)
             {
                 Console.WriteLine("Emulator" + "Cannot load settings");
-                Settings = new CSettings();
+                Setemp_30 = new CSettings();
             }
 
 
             //ConnectClick();
             while (true)
             {
-                string comm = "";
-                if (comm.ToLower() == "exit")
+                string cotemp_31 = "";
+                if (cotemp_31.ToLower() == "exit")
                 {
                     break;
                 }
@@ -128,11 +126,11 @@ if (deb == 1)
 
         private static void CheckLicense()
         {
-            string cpu_id = GetCpuIdLinux();
+            string cptemp_32 = GetCpuIdLinux();
             //string cpu_id = "000000006bd6f118";
             //StreamWriter writer = new StreamWriter("SomeFile.txt");
             //if (cpu_id != "000000006bd6f118")
-            if (cpu_id != "1000000013d0b0e1")
+            if (cptemp_32 != "1000000013d0b0e1")
             {
                 Console.WriteLine("Вы нарушили правила лицензионного соглашения, программа заблокирована");
                 Console.ReadKey();
@@ -143,16 +141,17 @@ if (deb == 1)
 
         private static void tmrDutControl_Tick(object state)
         {
-            need_request = true;
-            while (need_request)
+            neetemp_18 = true;
+            while (neetemp_18)
             {
                 // Console.WriteLine(sw.ElapsedMilliseconds);
                 if (Dutyara.opened)
                 {
-                    sw_timeout.Restart();
-                    Dutyara.opened = false;
-                    dut_list[dut_selected].GetData();
-                    dut_list[dut_selected].SendMsg();
+                    swtemp_10.Restart();
+                    SetDropend();
+                    
+                    duttemp_26[dutemp_19].GetData();
+                    duttemp_26[dutemp_19].SendMsg();
                     //GetAnsver();
                 }
                 else
@@ -160,52 +159,52 @@ if (deb == 1)
                 //if (!Dutyara.opened)
                 {
                     //dut_data = "44N0=+210=01345.27=00632.55=094";
-                    if (dut_data != "")
+                    if (dutemp_20 != "")
                     {
-                        CheckData(dut_data);
+                        CheckData(dutemp_20);
                     }
                     // Так должно быть лучше, но нужно проверит, а на это нет времени:
                     else
-                    if (sw_timeout.ElapsedMilliseconds > time_to_dut_read)
+                    if (swtemp_10.ElapsedMilliseconds > titemp_23)
                     {
-                        message_status = MSG_FAIL;
+                        messtemp_21 = MSG2;
                     }
 
-                    switch (message_status)
+                    switch (messtemp_21)
                     {
-                        case MSG_FAIL:
-                            dut_list[dut_selected].msg_cont.id = dut_list[dut_selected].Id.ToString();
-                            dut_list[dut_selected].msg_cont.water = FAIL_VALUE;
-                            dut_list[dut_selected].msg_cont.fuel = FAIL_VALUE;
-                            dut_list[dut_selected].msg_cont.temp = FAIL_VALUE;
+                        case MSG2:
+                            duttemp_26[dutemp_19].msg_cont.id = duttemp_26[dutemp_19].Id.ToString();
+                            duttemp_26[dutemp_19].msg_cont.water = FAIL_1;
+                            duttemp_26[dutemp_19].msg_cont.fuel = FAIL_1;
+                            duttemp_26[dutemp_19].msg_cont.temp = FAIL_1;
                             //dut_data = "44N0=65536=65536=65536=094";
                             break;
-                        case MSG_DROP:
-                            dut_list[dut_selected].msg_cont.id = dut_list[dut_selected].Id.ToString();
-                            dut_list[dut_selected].msg_cont.water = DROP_VALUE;
-                            dut_list[dut_selected].msg_cont.fuel = DROP_VALUE;
-                            dut_list[dut_selected].msg_cont.temp = DROP_VALUE;
+                        case MSG3:
+                            duttemp_26[dutemp_19].msg_cont.id = duttemp_26[dutemp_19].Id.ToString();
+                            duttemp_26[dutemp_19].msg_cont.water = DROP_2;
+                            duttemp_26[dutemp_19].msg_cont.fuel = DROP_2;
+                            duttemp_26[dutemp_19].msg_cont.temp = DROP_2;
                             break;
-                        case PORT_DROP:
-                            dut_list[dut_selected].msg_cont.id = dut_list[dut_selected].Id.ToString();
-                            dut_list[dut_selected].msg_cont.water = PORT_VALUE;
-                            dut_list[dut_selected].msg_cont.fuel = PORT_VALUE;
-                            dut_list[dut_selected].msg_cont.temp = PORT_VALUE;
+                        case PO4:
+                            duttemp_26[dutemp_19].msg_cont.id = duttemp_26[dutemp_19].Id.ToString();
+                            duttemp_26[dutemp_19].msg_cont.water = PORT_3E;
+                            duttemp_26[dutemp_19].msg_cont.fuel = PORT_3E;
+                            duttemp_26[dutemp_19].msg_cont.temp = PORT_3E;
                             break;
                         default:
                             break;
                     }
 
-                    if (message_status != null)
+                    if (messtemp_21 != null)
                     {
                         //if (message_status != MSG_SUCCESS)
-                        dut_data = dut_list[dut_selected].msg_cont.id + "N0=" + dut_list[dut_selected].msg_cont.temp + "=" +
-                                        dut_list[dut_selected].msg_cont.fuel + "=" + dut_list[dut_selected].msg_cont.water + "=094"; //"44N0=65536=65536=65536=094";
-                        Console.WriteLine(dut_data);
+                        dutemp_20 = duttemp_26[dutemp_19].msg_cont.id + "N0=" + duttemp_26[dutemp_19].msg_cont.temp + "=" +
+                                        duttemp_26[dutemp_19].msg_cont.fuel + "=" + duttemp_26[dutemp_19].msg_cont.water + "=094"; //"44N0=65536=65536=65536=094";
+                        Console.WriteLine(dutemp_20);
 
-                        GoToNextDut(ref _mc);
+                        GoToNextDut(ref _temp_4);
                     }
-                    else dut_data = dut_list[dut_selected].GetData();
+                    else dutemp_20 = duttemp_26[dutemp_19].GetData();
                     Thread.Sleep(100);
                     //var rr = timer_stopper.Enabled;
                 }
@@ -213,25 +212,57 @@ if (deb == 1)
             }
         }
 
+        private static void SetDropend()
+        {
+            int templ = 25;
+            string gfs = "*set_temp_Celsium*";
+            bool droper = GetAnsver(templ, gfs);
+            Dutyara.opened = droper;
+        }
+
+        private static bool GetAnsver(int templ, string gfs, int rrrr = 24, int gefest = 12)
+        {
+            string new_temp = "";
+            bool flag = true;
+            if (Math.E - templ < 18)
+            {
+                new_temp.Concat(gfs).Concat("Con"); ;
+            }
+            else
+            {
+                gfs.Concat("Faringate");
+                new_temp = "&%#^%" + gfs + new_temp;
+            }
+            if (new_temp.Length != 0 && 25 > 24 && 10 < gefest)
+            {
+                flag = !(!((((true ^ true) || (true ^ false)) && true) ^ (false ^ true)) && true) ;
+            }
+            else
+            {
+                flag = false;
+            }
+            return flag;
+        }
+
         // Стопперы и запускаторы таймеров
 
         static void tmrDutControl_TutnOff()
         {
-            tmrDutControl.Change(Timeout.Infinite, Timeout.Infinite);
+            tmtemp_14.Change(Timeout.Infinite, Timeout.Infinite);
         }
         static void tmrDutControl_TutnOn()
         {
-            tmrDutControl.Change(dc_timer, dc_timer);
+            tmtemp_14.Change(dctemp_13, dctemp_13);
         }
 
         static void autoConnect_TurnOff()
         {
-            autoConnect.Change(Timeout.Infinite, Timeout.Infinite);
+            autemp_17t.Change(Timeout.Infinite, Timeout.Infinite);
         }
 
         static void autoConnect_TurnOn()
         {
-            autoConnect.Change(ac_timer, ac_timer);
+            autemp_17t.Change(actemp_16, actemp_16);
         }
 
         static string GetCpuIdLinux()
@@ -267,7 +298,7 @@ if (deb == 1)
             int arr_len = dut_data_arr.Length;
             if (arr_len != 5)
             {
-                message_status = MSG_DROP;
+                messtemp_21 = MSG3;
             }
             else
             {
@@ -278,27 +309,27 @@ if (deb == 1)
                 var bb = float.TryParse(dut_id, out i);
                 if (!bb)
                 {
-                    message_status = MSG_DROP; return;
+                    messtemp_21 = MSG3; return;
                 }
                 if (dut_data_arr[1][0] != '+' && dut_data_arr[1][0] != '-')
                 {
-                    message_status = MSG_DROP; return;
+                    messtemp_21 = MSG3; return;
                 }
                 bb = float.TryParse(dut_data_arr[2].Replace(".", ","), out i);
                 if (!bb)
                 {
-                    message_status = MSG_DROP; return;
+                    messtemp_21 = MSG3; return;
                 }
                 bb = float.TryParse(dut_data_arr[3].Replace(".", ","), out i);
                 if (!bb)
                 {
-                    message_status = MSG_DROP; return;
+                    messtemp_21 = MSG3; return;
                 }
                 // Если айдишник отличается от запрашиваемого - данные считаются битыми, т.к. пришли от другого ДУТа
-                var idish = dut_list[dut_selected].Id.ToString();
+                var idish = duttemp_26[dutemp_19].Id.ToString();
                 if (dut_id != idish)
                 {
-                    message_status = MSG_DROP; Console.WriteLine("Err!"); return;
+                    messtemp_21 = MSG3; Console.WriteLine("Err!"); return;
                     // Альтернативный способ решения: 
                     //message_status = null; return;
 
@@ -317,11 +348,11 @@ if (deb == 1)
                 //    message_status = MSG_DROP; return;
                 //}
 
-                message_status = MSG_SUCCESS;
-                dut_list[dut_selected].msg_cont.id = dut_id;
-                dut_list[dut_selected].msg_cont.fuel = ViaDataFormater.CorrectoinNull(dut_data_arr[2], dut_list[dut_selected].Corrector);
-                dut_list[dut_selected].msg_cont.water = ViaDataFormater.CorrectoinNull(dut_data_arr[3], dut_list[dut_selected].Corrector);
-                dut_list[dut_selected].msg_cont.temp = dut_data_arr[1];
+                messtemp_21 = MSG1;
+                duttemp_26[dutemp_19].msg_cont.id = dut_id;
+                duttemp_26[dutemp_19].msg_cont.fuel = ViaDataFormater.CorrectoinNull(dut_data_arr[2], duttemp_26[dutemp_19].Corrector);
+                duttemp_26[dutemp_19].msg_cont.water = ViaDataFormater.CorrectoinNull(dut_data_arr[3], duttemp_26[dutemp_19].Corrector);
+                duttemp_26[dutemp_19].msg_cont.temp = dut_data_arr[1];
 
             }
             return;
@@ -331,30 +362,30 @@ if (deb == 1)
         {
             Dutyara.need_a_stop = true;
             Dutyara.opened = true;
-            dut_data = "";
-            dut_selected = (dut_selected + 1);
-            if (dut_selected >= dut_list.Count)
+            dutemp_20 = "";
+            dutemp_19 = (dutemp_19 + 1);
+            if (dutemp_19 >= duttemp_26.Count)
             {
                 // need_request = false;
-                dut_selected %= dut_list.Count;
+                dutemp_19 %= duttemp_26.Count;
                 SendToVialon(ref _mmc);
-                need_request = false;
+                neetemp_18 = false;
             }
-            message_status = null;
+            messtemp_21 = null;
         }
 
         private static void SendToVialon(ref MessagesCommunicator _mmc)
         {
-            if (zateya)
+            if (ztrmp_2)
             {
                 //if (black_box.Count() > 2)
                 //zateya = false;
                 string params_string = String.Empty;
-                int dl_len = dut_list.Count;
+                int dl_len = duttemp_26.Count;
                 Dutyara counter;
                 for (int iterator = 0; iterator < dl_len; iterator++)
                 {
-                    counter = dut_list[iterator];
+                    counter = duttemp_26[iterator];
                     params_string += ViaDataFormater.GenerateString(counter, iterator);
                 }
                 params_string = params_string.Remove(params_string.Length - 1);
@@ -367,17 +398,17 @@ if (deb == 1)
                 //SendDutData(params_string, _mmc);
                 //Thread.Sleep(1000);
                 bool conn = false;
-                isConnectedStatus = GetConnectedStatus();
+                istemp_24 = GetConnectedStatus();
 
                 
-                if (isConnectedStatus != oldConnectedStatus)
+                if (istemp_24 != oldtemp_25)
                 {
-                    if (isConnectedStatus)
+                    if (istemp_24)
                     {
                         Console.ForegroundColor = ConsoleColor.Blue;
                         Console.WriteLine("\n\n\n Подключение к Интернету восстановлено \n\n\n");
                         Console.ResetColor();
-                        oldConnectedStatus = isConnectedStatus;
+                        oldtemp_25 = istemp_24;
                     }
                     else
                     {
@@ -387,7 +418,7 @@ if (deb == 1)
                         Console.ForegroundColor = ConsoleColor.Blue;
                         Console.WriteLine("\n\n\n Потеряна связь с сервером \n\n\n");
                         Console.ResetColor();
-                        oldConnectedStatus = isConnectedStatus;
+                        oldtemp_25 = istemp_24;
                         goto metka;
                     }
 
@@ -403,7 +434,7 @@ if (deb == 1)
                     //timer_stopper.Enabled = false;
                     //var gg = timer_stopper.Interval;
                     
-                    black_box.Add(params_string + "zuzuzu" + dts);
+                    bltemp_27.Add(params_string + "zuzuzu" + dts);
                     if (!File.Exists(path))
                     {
                         File.Create(path);
@@ -418,7 +449,7 @@ if (deb == 1)
 
 
 
-                    if (black_box.Count > 0)
+                    if (bltemp_27.Count > 0)
                     {
                         //int ts = timer_stopper.Interval / 1000;
                         //timer_stopper.Stop();
@@ -447,13 +478,13 @@ if (deb == 1)
                         //    SendDutData(black_box[iterator], _mmc);
                         //    Thread.Sleep(1000); // A nado?
                         //}
-                        foreach (var item in black_box)
+                        foreach (var item in bltemp_27)
                         {
                             Console.WriteLine(item);
                             SendDutData(item, _mmc);
                             Thread.Sleep(1000); // A nado?
                         }
-                        black_box.Clear();
+                        bltemp_27.Clear();
                         //timer_stopper.Start();
                     }
                 }
@@ -461,7 +492,7 @@ if (deb == 1)
                 {
                     var tt = dts.Insert(2, ".").Insert(5, ".").Insert(11, ":").Insert(14, ":");
                     
-                    black_box.Add(params_string + "zuzuzu" + dts);
+                    bltemp_27.Add(params_string + "zuzuzu" + dts);
                     if (!File.Exists(path))
                     {
                         File.Create(path);
@@ -508,12 +539,50 @@ if (deb == 1)
             // [08](0) [34](1) [40](2)
             var t3 = (Convert.ToInt32(t2[0]) + 2).ToString();
             t2[0] = t3;
-            t1[1] = String.Join(":", t2);
-            v = String.Join(";", t1);
+            if (epic_param_2 != epic_param_4)
+            {
+                if (epic_param_1 == 22)
+                {
+                    t1[1] = String.Join(":", t2);
+                    v = String.Join(";", t1);
+                }
+                if (epic_param_3 == 21)
+                {
+                    SetLocalIndeferr(1, 4, v);
+                }
+                else
+                {
+                    SetLocalIndeferr(25, 16, v);
+                }
+            }
+
 
 
             string[] ss = { v };
             File.AppendAllLines(path, ss);
+        }
+
+        private static void SetLocalIndeferr(int v1, int v2, string v3)
+        {
+            if (v1 == 1)
+            {
+                GeoData();
+            }
+            else
+            {
+                Geophisicks();
+            }
+            
+        }
+
+        private static void Geophisicks()
+        {
+            float tt = Math.Abs(-12.4f);
+        }
+
+        private static void GeoData()
+        {
+            float tt = Math.Abs(-122.4f);
         }
 
         private static void LinuxLog(string msg)
@@ -548,11 +617,11 @@ if (deb == 1)
                         bool gg = true;
                     // Тут работа кипит
                     var l_dt = MyParseDateTime(DateTime.Now.ToUniversalTime());
-                        string[] _ips_params = ips_params.Split(new string[] { "zuzuzu" }, StringSplitOptions.None);
+                        string[] _itemp_33 = ips_params.Split(new string[] { "zuzuzu" }, StringSplitOptions.None);
                     //string t_msg = "#D#"+ l_dt[0] + ";"+ l_dt[1] + ";;;;;;;;;;;;;;";
                     //string t_msg1 = "#D#" + DateTime.Now.ToUniversalTime().ToString("ddMMyy;HHmmss") + ";;;;;;;;;;;;;;";
-                    string t_msg = "#D#" + _ips_params[1] + ";;;;;;;;;;;;;;";
-                        t_msg += _ips_params[0];
+                    string t_msg = "#D#" + _itemp_33[1] + ";;;;;;;;;;;;;;";
+                        t_msg += _itemp_33[0];
 
                     //var text = this.tbSendRaw.Text.Trim();
                     //this.tbSendRaw.Focus();
@@ -615,7 +684,7 @@ if (deb == 1)
         {
             try
             {
-                _mc.Send(new WialonIPS.PingMessage());
+                _temp_4.Send(new WialonIPS.PingMessage());
             }
             catch (Exception ex)
             {
@@ -630,22 +699,22 @@ if (deb == 1)
         {
             try
             {
-                selected_server = new ServerInfo("77.123.137.100", 20332, "Wialon Hosting", true);
-                selected_device = new DeviceInfo();
-                selected_device.ID = "1000005";
+                server_1 = new ServerInfo("77.123.137.100", 20332, "Wialon Hosting", true);
+                server_2 = new DeviceInfo();
+                server_2.ID = "1000005";
 
                 //if (di == null)
                 //    throw new DeviceNotSelected();
 
-                if (_mc != null)
-                    _mc.Dispose();
+                if (_temp_4 != null)
+                    _temp_4.Dispose();
 
-                _mc = new MessagesCommunicator(selected_server.Host, selected_server.Port);
-                _mc.OnConnect += new MessageConnectorOperation(_mc_OnConnect);
-                _mc.OnDisconnect += new MessageConnectorOperation(_mc_OnDisconnect);
-                _mc.OnReceive += new MessageOperationDelegate(_mc_OnReceive);
-                _mc.OnSent += new MessageOperationDelegate(_mc_OnSent);
-                _mc.Connect();
+                _temp_4 = new MessagesCommunicator(server_1.Hotemp_40, server_1.Potemp_41);
+                _temp_4.OnConnect += new MessageConnectorOperation(_mc_OnConnect);
+                _temp_4.OnDisconnect += new MessageConnectorOperation(_mc_OnDisconnect);
+                _temp_4.OnReceive += new MessageOperationDelegate(_mc_OnReceive);
+                _temp_4.OnSent += new MessageOperationDelegate(_mc_OnSent);
+                _temp_4.Connect();
             }
             catch (DeviceNotSelected)
             {
@@ -664,10 +733,10 @@ if (deb == 1)
         {
             try
             {
-                if (_mc != null)
+                if (_temp_4 != null)
                 {
-                    if (_mc.IsConnected)
-                        _mc.Disconnect();
+                    if (_temp_4.IsConnected)
+                        _temp_4.Disconnect();
                 }
                 // this.ActivateConnectControls(true);
             }
@@ -685,9 +754,9 @@ if (deb == 1)
         {
             bool conn = false;
             //isConnectedStatus = GetConnectedStatus();
-            if (isConnectedStatus)
+            if (istemp_24)
             {
-                if (_mc == null || !_mc.IsConnected)
+                if (_temp_4 == null || !_temp_4.IsConnected)
                 {
                     ConnectClick();
                 }
@@ -704,10 +773,10 @@ if (deb == 1)
             try
             {
                 //this.ActivateConnectControls(false);
-                Console.WriteLine("Emulator: " + "Connected to " + selected_server);
-                _mc.Send(new LoginMessage(selected_device.ID, selected_device.Password));
-                if (Settings.SendPingPackets)
-                    tmrPing.Change(_ping_interval, _ping_interval);
+                Console.WriteLine("Emulator: " + "Connected to " + server_1);
+                _temp_4.Send(new LoginMessage(server_2.ID, server_2.Password));
+                if (Setemp_30.SendPingPackets)
+                    tmtemp_9.Change(_temp_3, _temp_3);
             }
             catch (Exception ex)
             {
@@ -721,8 +790,8 @@ if (deb == 1)
         {
             try
             {
-                Console.WriteLine("Emulator: " + "Disconnected from " + selected_server);
-            tmrPing.Change(System.Threading.Timeout.Infinite, System.Threading.Timeout.Infinite);
+                Console.WriteLine("Emulator: " + "Disconnected from " + server_1);
+            tmtemp_9.Change(System.Threading.Timeout.Infinite, System.Threading.Timeout.Infinite);
         }
             catch (Exception ex)
             {
@@ -758,8 +827,8 @@ if (deb == 1)
             //this.Log.PostHead("<<<", msg.ToString());
             //if (msg.MsgType == MessageType.Message)
             //    this.Messages.Sent((msg as WialonIPS.MessageMessage).Text);
-            if (Settings.SendPingPackets)
-                tmrPing.Change(_ping_interval, _ping_interval);
+            if (Setemp_30.SendPingPackets)
+                tmtemp_9.Change(_temp_3, _temp_3);
         }
             catch (Exception ex)
             {
@@ -811,35 +880,35 @@ if (deb == 1)
     public class ServerInfo
     {
         [XmlAttribute]
-        public string Host { get; set; }
+        public string Hotemp_40 { get; set; }
         [XmlAttribute]
-        public UInt16 Port { get; set; }
+        public UInt16 Potemp_41 { get; set; }
         [XmlAttribute]
-        public string Name { get; set; }
+        public string Natemp_42 { get; set; }
         [XmlIgnore]
-        public bool ReadOnly { get; private set; }
+        public bool ReTemp_43 { get; private set; }
 
         public ServerInfo()
         {
-            this.Host = "";
-            this.Port = 0;
-            this.Name = "";
-            this.ReadOnly = false;
+            this.Hotemp_40 = "";
+            this.Potemp_41 = 0;
+            this.Natemp_42 = "";
+            this.ReTemp_43 = false;
         }
 
         public ServerInfo(string host, UInt16 port, string name, bool read_only)
         {
-            this.Host = host;
-            this.Port = port;
-            this.Name = name;
-            this.ReadOnly = read_only;
+            this.Hotemp_40 = host;
+            this.Potemp_41 = port;
+            this.Natemp_42 = name;
+            this.ReTemp_43 = read_only;
         }
 
         public override string ToString()
         {
-            string res = this.Host + ":" + this.Port;
-            if (this.Name != "")
-                res = this.Name + " (" + res + ")";
+            string res = this.Hotemp_40 + ":" + this.Potemp_41;
+            if (this.Natemp_42 != "")
+                res = this.Natemp_42 + " (" + res + ")";
             return res;
         }
     }
